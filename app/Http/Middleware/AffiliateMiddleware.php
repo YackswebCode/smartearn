@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AffiliateTrackMiddleware
+class AffiliateMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,8 +15,10 @@ class AffiliateTrackMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
-    }
+        if (auth()->check() && auth()->user()->role === 'user') {
+            return $next($request);
+        }
 
-    
+        abort(403, 'Unauthorized access. Affiliate privileges required.');
+    }
 }

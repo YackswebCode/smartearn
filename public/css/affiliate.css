@@ -1,0 +1,202 @@
+/* public/css/affiliate.css */
+
+:root {
+    --primary-green: #065754;
+    --light-green: #0b7a76;
+    --heading-green: #48BB78;
+    --bg-soft: #EEF0F8;
+}
+
+/* Sidebar default (desktop) */
+#sidebar-wrapper {
+    min-width: 250px;
+    transition: margin 0.25s ease-out;
+}
+
+/* Overlay used in mobile view */
+#sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 900; /* below sidebar (which is 1000) and above content */
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+}
+
+/* Show overlay */
+#sidebar-overlay.show {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* On mobile, hide sidebar by default and make it fixed overlay */
+@media (max-width: 991px) {
+    #sidebar-wrapper {
+        margin-left: -250px;
+        position: fixed;
+        z-index: 1000;
+        height: 100vh;
+        transition: margin 0.3s ease;
+        top: 0;
+        left: 0;
+        overflow-y: auto;
+        width: 250px;
+    }
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: 0;
+    }
+    #page-content-wrapper {
+        min-width: 100vw;
+        transition: opacity 0.3s ease;
+    }
+    #wrapper.toggled #page-content-wrapper {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}
+
+/* On desktop, sidebar is always visible and part of layout */
+@media (min-width: 992px) {
+    #sidebar-wrapper {
+        margin-left: 0 !important;
+        position: relative !important;
+        z-index: auto;
+        height: auto;
+    }
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+    #wrapper.toggled #page-content-wrapper {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+/* Remove borders from list-group items */
+.list-group-item {
+    border: none !important;
+}
+
+.list-group-item.bg-transparent {
+    color: white !important;
+    transition: background 0.2s;
+    padding: 0.75rem 1.25rem;
+}
+
+.list-group-item.bg-transparent:hover {
+    background-color: rgba(255,255,255,0.1) !important;
+}
+
+.list-group-item.bg-transparent.active {
+    background-color: var(--light-green) !important;
+}
+
+.list-group-item i {
+    width: 1.5rem;
+    text-align: center;
+}
+
+.btn-light-green {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 0.5rem;
+    font-weight: 500;
+}
+
+.btn-light-green:hover {
+    background-color: var(--light-green);
+}
+
+/* Horizontal rules in sidebar */
+hr {
+    opacity: 0.2;
+    margin: 0.5rem 0;
+    border-top: 1px solid rgba(255,255,255,0.2) !important;
+}
+
+/* Top navbar */
+.navbar {
+    box-shadow: none;
+    border-bottom: 1px solid #dee2e6 !important;
+    background-color: var(--bg-soft) !important;
+}
+
+/* Profile dropdown avatar background */
+.bg-green.rounded-circle {
+    background-color: var(--primary-green) !important;
+}
+
+/* Dashboard Cards */
+.card {
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;
+}
+
+.card-header {
+    font-weight: 600;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+/* Misc tweaks to keep spacing consistent */
+.sidebar-heading img {
+    display: block;
+    margin: 0 auto;
+}
+
+/* Ensure links/text inside dropdown button are white */
+.navbar .dropdown-toggle {
+    color: #fff !important;
+    text-decoration: none;
+}
+
+/* Improve focus styles for accessibility */
+#menu-toggle:focus,
+.list-group-item:focus,
+.dropdown-item:focus {
+    outline: 3px solid rgba(6,87,84,0.15);
+    outline-offset: 2px;
+}
+
+
+/* Horizontal Metrics Card */
+.metrics-scroll {
+    gap: 2rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: thin;
+}
+
+.metric-item {
+    min-width: 180px;
+    flex: 0 0 auto;
+    text-align: left;
+}
+
+.metric-item small {
+    color: #6c757d;
+    display: block;
+}
+
+.metric-item h4 {
+    margin: 0;
+    font-weight: 700;
+}
+
+/* Smooth scrolling feel */
+.metrics-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+.metrics-scroll::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}

@@ -60,5 +60,8 @@ class Kernel extends HttpKernel
         'vendor'  => \App\Http\Middleware\VendorMiddleware::class,
         'currency'=> \App\Http\Middleware\CurrencyMiddleware::class,
         'affiliate.track' => \App\Http\Middleware\AffiliateTrackMiddleware::class,
+
+         'affiliate' => \App\Http\Middleware\AffiliateMiddleware::class,
     ];
+
 }
