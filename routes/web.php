@@ -72,6 +72,9 @@ Route::controller(VerificationController::class)->group(function () {
     Route::post('verify/resend', 'resend')->name('verification.resend');
 });
 
+// Subscription payment (after email verification)
+Route::get('/subscription/pay', [App\Http\Controllers\SubscriptionController::class, 'showPaymentForm'])->name('subscription.payment');
+Route::post('/subscription/verify', [App\Http\Controllers\SubscriptionController::class, 'verifyPayment'])->name('subscription.verify');
 // Password Reset
 Route::controller(ForgotPasswordController::class)->group(function () {
     Route::get('password/reset', 'showLinkRequestForm')->name('password.request');
