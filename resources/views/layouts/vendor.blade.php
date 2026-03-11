@@ -1,10 +1,10 @@
-{{-- resources/views/layouts/affiliate.blade.php --}}
+{{-- resources/views/layouts/vendor.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Affiliate Dashboard') - SmartEarn</title>
+    <title>@yield('title', 'Vendor Dashboard') - SmartEarn</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome 6 -->
@@ -12,7 +12,7 @@
     <!-- DataTables Bootstrap 5 CSS -->
     <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
-    <!-- Affiliate Dashboard CSS -->
+    <!-- Vendor Dashboard CSS (optional, reuse affiliate.css or create vendor.css) -->
     <link rel="stylesheet" href="{{ asset('css/affiliate.css') }}">
     @stack('styles')
 </head>
@@ -33,26 +33,29 @@
             </div>
             <div class="px-3 mb-3">
                 <button class="btn btn-light-green w-100" style="background-color: #4CAF50; border: none; color: white;">
-                    <i class="fas fa-user-check me-2"></i>Affiliate
+                    <i class="fas fa-store me-2"></i>Vendor
                 </button>
             </div>
 
-            <!-- Menu Groups -->
+            <!-- Vendor Sidebar Menu -->
             <div class="list-group list-group-flush">
-                <!-- Group 1 -->
-                <a href="{{ route('affiliate.dashboard') }}" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('affiliate.dashboard') ? 'active' : '' }}">
+                <!-- Dashboard -->
+                <a href="{{ route('vendor.dashboard') }}" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('vendor.dashboard') ? 'active' : '' }}">
                     <i class="fas fa-tachometer-alt me-3"></i>Dashboard
                 </a>
-                <a href="{{ route('affiliate.orders') }}" class="list-group-item list-group-item-action bg-transparent text-white">
+                <!-- Order & Sales -->
+                <a href="{{ route('vendor.orders') }}" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('vendor.orders') ? 'active' : '' }}">
                     <i class="fas fa-shopping-cart me-3"></i>Order & Sales
                 </a>
-                <a href="{{ route('affiliate.marketplace') }}" class="list-group-item list-group-item-action bg-transparent text-white">
-                    <i class="fas fa-store me-3"></i>Marketplace
+                <!-- My Product -->
+                <a href="{{ route('vendor.products.index') }}" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('vendor.products.*') ? 'active' : '' }}">
+                    <i class="fas fa-box me-3"></i>My Product
                 </a>
-                <a href="{{ route('affiliate.top_affiliate') }}" class="list-group-item list-group-item-action bg-transparent text-white">
-                    <i class="fas fa-crown me-3"></i>Top Affiliate
+                <!-- Top Vendor -->
+                <a href="{{ route('vendor.top_vendor') }}" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('vendor.top_vendor') ? 'active' : '' }}">
+                    <i class="fas fa-crown me-3"></i>Top Vendor
                 </a>
-                <a href="{{ route('affiliate.edit_profile') }}" class="list-group-item list-group-item-action bg-transparent text-white">
+                 <a href="{{ route('affiliate.edit_profile') }}" class="list-group-item list-group-item-action bg-transparent text-white">
                     <i class="fas fa-user-edit me-3"></i>Edit Profile
                 </a>
                 <hr class="my-2">
@@ -82,18 +85,12 @@
         <!-- Overlay for mobile -->
         <div id="sidebar-overlay" aria-hidden="true"></div>
 
-      <div id="page-content-wrapper" class="w-100 d-flex flex-column" style="background-color: #EEF0F8; min-height: 100vh;">
-            <!-- Top Navigation -->
+        <div id="page-content-wrapper" class="w-100 d-flex flex-column" style="background-color: #EEF0F8; min-height: 100vh;">
+            <!-- Top Navigation (same as affiliate, but can adjust dropdown if needed) -->
             <nav class="navbar navbar-expand-lg navbar-light py-2 px-4" style="background-color: #EEF0F8;">
                 <div class="container-fluid">
-                    <!-- Left side: toggle button + greeting -->
                     <div class="d-flex align-items-center">
-                        <button
-                            class="btn btn-outline-secondary d-lg-none me-3"
-                            id="menu-toggle"
-                            aria-controls="sidebar-wrapper"
-                            aria-expanded="false"
-                            aria-label="Toggle sidebar">
+                        <button class="btn btn-outline-secondary d-lg-none me-3" id="menu-toggle" aria-controls="sidebar-wrapper" aria-expanded="false" aria-label="Toggle sidebar">
                             <i class="fas fa-bars"></i>
                         </button>
                         <div>
@@ -104,18 +101,16 @@
                         </div>
                     </div>
 
-                    <!-- Right side: profile dropdown -->
+                    <!-- Right side: profile dropdown (same as affiliate) -->
                     <div class="d-flex align-items-center ms-auto">
                         <div class="dropdown">
-                            <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #48BB78;  padding: 0.5rem 1rem; border-radius: 0.25rem;">
-                                <!-- Avatar on the left -->
+                            <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #48BB78; padding: 0.5rem 1rem; border-radius: 0.25rem;">
                                 <div class="rounded-circle bg-green text-white d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px; background-color: #065754 !important;">
                                     {{ $initial }}
                                 </div>
-                                <!-- User info on the right -->
                                 <div class="text-start">
                                     <div class="fw-bold text-white">{{ strtoupper($displayName) }}</div>
-                                    <small class="text-white">Affiliate</small>
+                                    <small class="text-white">Vendor</small>
                                 </div>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
@@ -137,7 +132,7 @@
                 </div>
             </nav>
 
-           <!-- Main Content Area - flex-grow to fill remaining space -->
+            <!-- Main Content Area -->
             <div class="container-fluid p-4 flex-grow-1">
                 @yield('content')
             </div>
@@ -147,17 +142,15 @@
     <!-- Hidden logout form -->
     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
 
-    <!-- jQuery -->
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 
-    <!-- Sidebar Toggle Script (unchanged) -->
+    <!-- Sidebar Toggle Script (same as affiliate) -->
     <script>
         (function () {
             const wrapper = document.getElementById('wrapper');

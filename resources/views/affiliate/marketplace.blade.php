@@ -31,18 +31,30 @@
 <div class="row">
     @foreach($products as $product)
     <div class="col-md-3 mb-4">
-        <div class="card h-100 border-0 shadow-sm p-3" style="background-color: #065754; color: white;">
-            <div class="mb-2">
-                @for($i=0; $i < $product->rating; $i++)
-                    <i class="fas fa-star text-warning"></i>
-                @endfor
+        <div class="card h-100 border-0 shadow-sm" style="background-color: #065754; color: white;">
+            <!-- Product Image -->
+            <div style="height: 150px; overflow: hidden; border-top-left-radius: inherit; border-top-right-radius: inherit;">
+                @if($product->image)
+                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-100 h-100" style="object-fit: cover;">
+                @else
+                    <div class="bg-secondary bg-opacity-25 d-flex align-items-center justify-content-center h-100">
+                        <i class="fas fa-image fa-3x text-white-50"></i>
+                    </div>
+                @endif
             </div>
-            <h5>{{ $product->name }}</h5>
-            <small class="text-white">{{ $product->category }}</small>
-            <div class="d-flex justify-content-between align-items-center mt-2">
-                <a href="{{ route('affiliate.product.detail', ['slug' => $product->slug]) }}" class="btn btn-success btn-sm">Promote</a>
-                <div>
-                    <span style="font-size: 10px">{{ $product->currency }} {{ number_format($product->price, 2) }} | Com: {{ $product->commission_percent }}%</span>
+            <div class="card-body p-3">
+                <div class="mb-2">
+                    @for($i=0; $i < $product->rating; $i++)
+                        <i class="fas fa-star text-warning"></i>
+                    @endfor
+                </div>
+                <h5>{{ $product->name }}</h5>
+                <small class="text-white-50">{{ $product->category }}</small>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <a href="{{ route('affiliate.product.detail', ['slug' => $product->slug]) }}" class="btn btn-success btn-sm">Promote</a>
+                    <div>
+                        <span style="font-size: 10px">{{ $product->currency }} {{ number_format($product->price, 2) }} | Com: {{ $product->commission_percent }}%</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -51,7 +63,7 @@
 </div>
 
 <!-- Pagination -->
-<div class="d-flex justify-content-center">
+<div class="d-flex justify-content-center mt-4">
     {{ $products->links() }}
 </div>
 @endsection

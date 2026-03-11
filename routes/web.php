@@ -202,6 +202,10 @@ Route::prefix('affiliate')
             Route::post('/profile/update', 'update')->name('update_profile');
         });
 
+        // New route for becoming a vendor
+        Route::post('/profile/become-vendor', [AffiliateController::class, 'becomeVendor'])
+            ->name('become_vendor');
+
         /*
         |--------------------------------------------------------------------------
         | Skill Garage
@@ -240,4 +244,19 @@ Route::prefix('affiliate')
             Route::get('/my-learning/{id}', 'show')->name('learning.track');
         });
 
+    });
+
+
+    // Vendor Routes (Authenticated & Verified)
+Route::prefix('vendor')
+    ->name('vendor.')
+    ->middleware(['auth', 'verified'])
+    ->group(function () {
+        Route::get('/dashboard', [App\Http\Controllers\Vendor\VendorController::class, 'dashboard'])
+            ->name('dashboard');
+        Route::get('/orders', [App\Http\Controllers\Vendor\VendorOrderController::class, 'index'])->name('orders');
+                // Product routes
+        Route::resource('products', App\Http\Controllers\Vendor\VendorProductController::class)
+            ->except(['show']); // we don't need a show page for now (can add later if needed)
+        Route::get('/top-vendor', [App\Http\Controllers\Vendor\TopVendorController::class, 'index'])->name('top_vendor');
     });

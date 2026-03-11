@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AffiliateController extends Controller
 {
@@ -79,7 +80,7 @@ class AffiliateController extends Controller
                 'customer_email'     => $order->buyer_email,
                 'reference'          => $order->reference,
                 'transaction_date'   => $order->created_at,
-                'total'              => $order->affiliate_commission, // now shows commission
+                'total'              => $order->affiliate_commission,
                 'affiliate_name'     => $user->name,
                 'affiliate_email'    => $user->email,
                 'commission_percent' => $product->commission_percent ?? 0,
@@ -135,7 +136,7 @@ class AffiliateController extends Controller
                 'customer_email'     => $order->buyer_email,
                 'reference'          => $order->reference,
                 'transaction_date'   => $order->created_at,
-                'total'              => $order->affiliate_commission, // show commission
+                'total'              => $order->affiliate_commission,
                 'affiliate_name'     => $user->name,
                 'affiliate_email'    => $user->email,
                 'commission_percent' => $product->commission_percent ?? 0,
@@ -157,7 +158,6 @@ class AffiliateController extends Controller
         ]);
     }
 
-    // The remaining methods (marketplace, subscribe, productDetail) stay exactly as before.
     public function marketplace()
     {
         $user = Auth::user();
@@ -196,5 +196,30 @@ class AffiliateController extends Controller
     {
         $product = Product::where('slug', $slug)->firstOrFail();
         return view('affiliate.product-detail', compact('product'));
+    }
+
+    public function becomeVendor(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'agree_terms' => 'required|accepted',
+        ]);
+
+        if ($user->wallet_balance < 1000) {
+            return back()->withErrors(['wallet' => 'Insufficient wallet balance. Please add funds.']);
+        }
+
+        if (!in_array($user->vendor_status, ['Not_Yet', 'Reject'])) {
+            return back()->withErrors(['status' => 'You are already a vendor or have a pending application.']);
+        }
+
+        DB::transaction(function () use ($user) {
+            $user->wallet_balance -= 1000;
+            $user->vendor_status = 'Pending';
+            $user->save();
+        });
+
+        return redirect()->route('affiliate.edit_profile')->with('success', 'Your vendor application has been submitted. Awaiting admin approval.');
     }
 }

@@ -89,6 +89,86 @@
             </form>
         </div>
     </div>
+
+    <!-- Become a Vendor Section -->
+    @if($user->vendor_status === 'Not_Yet' || $user->vendor_status === 'Reject')
+        <hr class="my-4">
+        <div class="text-center">
+            <h4 class="fw-bold">Ready to become a vendor?</h4>
+            <p class="text-muted">Pay a one-time fee of ₦1,000 to start selling your products.</p>
+            <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#becomeVendorModal">
+                <i class="fas fa-store me-2"></i>Become a Vendor
+            </button>
+        </div>
+    @elseif($user->vendor_status === 'Pending')
+        <hr class="my-4">
+        <div class="alert alert-info text-center">
+            <i class="fas fa-clock me-2"></i>Your vendor application is pending admin approval.
+        </div>
+    @elseif($user->vendor_status === 'Active')
+        <hr class="my-4">
+        <div class="alert alert-success text-center">
+            <i class="fas fa-check-circle me-2"></i>You are already an active vendor.
+        </div>
+    @endif
+</div>
+
+<!-- Become Vendor Modal -->
+<div class="modal fade" id="becomeVendorModal" tabindex="-1" aria-labelledby="becomeVendorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="becomeVendorModalLabel">
+                    <i class="fas fa-store me-2"></i>Become a Vendor
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('affiliate.become_vendor') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <p>Please review the following conditions before proceeding:</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> You must be an active affiliate.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> One-time fee of <strong>₦1,000</strong> will be deducted from your wallet.</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Your application will be reviewed by admin (usually within 24-48 hours).</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Once approved, you can start adding products.</li>
+                    </ul>
+
+                    <!-- Current Wallet Balance -->
+                    <div class="alert alert-info">
+                        <strong>Your Wallet Balance:</strong> ₦{{ number_format($user->wallet_balance, 2) }}
+                        @if($user->wallet_balance < 1000)
+                            <div class="text-danger mt-2">Insufficient balance. Please fund your wallet first.</div>
+                        @endif
+                    </div>
+
+                    <!-- Business Information Preview (already entered) -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Business Name</label>
+                        <input type="text" class="form-control" value="{{ $user->business_name ?? $user->name }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Business Description</label>
+                        <textarea class="form-control" rows="2" readonly>{{ $user->business_description ?? 'Not provided' }}</textarea>
+                    </div>
+
+                    <!-- Terms Agreement -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="agree_terms" id="agreeTerms" required {{ $user->wallet_balance < 1000 ? 'disabled' : '' }}>
+                        <label class="form-check-label" for="agreeTerms">
+                            I agree to the <a href="#" target="_blank">Vendor Terms & Conditions</a> and confirm that the information provided is correct.
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success" {{ $user->wallet_balance < 1000 ? 'disabled' : '' }}>
+                        <i class="fas fa-credit-card me-2"></i>Pay ₦1,000
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 @push('scripts')

@@ -74,12 +74,17 @@
                     </div>
 
                     <div class="p-4">
-                    <!-- {{ asset('storage/' . $product->image) }}     -->
-                    <!-- Product Image -->
+                        <!-- Product Image -->
                         @if($product->image)
-                            <img src="{{ $product->image }}" class="img-fluid rounded mb-3" alt="{{ $product->name }}">
+                            <img src="{{ asset('storage/' . $product->image) }}" 
+                                 class="img-fluid rounded mb-3 w-100" 
+                                 alt="{{ $product->name }}"
+                                 style="max-height: 300px; object-fit: cover;">
                         @else
-                            <div class="bg-light text-center py-5 mb-3 rounded">No image available</div>
+                            <div class="bg-light text-center py-5 mb-3 rounded">
+                                <i class="fas fa-image fa-3x text-muted"></i>
+                                <p class="mt-2">No image available</p>
+                            </div>
                         @endif
 
                         <!-- Rating Stars -->
@@ -122,9 +127,11 @@
                         <!-- Vendor Information -->
                         <div class="mb-4 p-3 bg-light rounded">
                             <h5 class="text-primary-green">Vendor Information</h5>
-                            <p><strong>Name:</strong> {{ $vendor->name ?? 'Unknown' }}</p>
-                            <p><strong>Email:</strong> {{ $vendor->email ?? 'N/A' }}</p>
-                            <!-- You can add more vendor fields like 'bio' if you have them -->
+                            <p><strong>Name:</strong> {{ $vendor->name ?? 'SmartEarn Vendor' }}</p>
+                            <p><strong>Email:</strong> {{ $vendor->email ?? 'vendor@smartearn.com' }}</p>
+                            @if($vendor && $vendor->business_description)
+                                <p><strong>Business Description:</strong> {{ $vendor->business_description }}</p>
+                            @endif
                         </div>
 
                         <!-- Buyer Fields -->

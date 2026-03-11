@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 class Product extends Model
 {
     protected $fillable = [
-        'name', 'slug', 'affiliate_slug', 'description', 'price', 'currency',
+        'name',  'vendor_id', 'slug', 'affiliate_slug', 'description', 'price', 'currency',
         'commission_percent', 'category', 'type', 'rating', 'image'
     ];
 
@@ -23,5 +23,9 @@ class Product extends Model
                 $product->affiliate_slug = Str::random(8) . '-' . Str::random(4);
             }
         });
+    }
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'product_id');
     }
 }
