@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Affiliate;
+namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
 use App\Models\UserBankAccount;
@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class WithdrawalController extends Controller
+class VendorWithdrawalController extends Controller
 {
     protected $toNGN = [
         'NGN' => 1,
@@ -28,9 +28,6 @@ class WithdrawalController extends Controller
         'KES' => 'KES',
     ];
 
-    /**
-     * Show the withdrawal form and list of past withdrawals.
-     */
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -38,8 +35,8 @@ class WithdrawalController extends Controller
         $toNGN = $this->toNGN;
         $symbols = $this->symbols;
 
-        // Available balance in user's currency
-        $balance = $user->affiliate_balance / $toNGN[$userCurrency];
+        // Available vendor balance in user's currency
+        $balance = $user->vendor_balance / $toNGN[$userCurrency];
 
         // Fixed fee (in NGN, but displayed in user currency)
         $withdrawalFee = 100; // NGN
@@ -47,22 +44,20 @@ class WithdrawalController extends Controller
         // Check for any pending withdrawal
         $hasPending = Withdrawal::where('user_id', $user->id)
             ->where('status', 'pending')
+            ->where('type', 'vendor')
             ->exists();
 
         // User's saved bank accounts
         $savedAccounts = UserBankAccount::where('user_id', $user->id)->get();
 
-        // Selected account from query string (if any)
         $selectedAccountId = $request->get('account_id');
 
-        // If an account is selected, load it; otherwise try the default account
         if ($selectedAccountId) {
             $bankDetails = UserBankAccount::where('user_id', $user->id)->find($selectedAccountId);
         } else {
             $bankDetails = UserBankAccount::where('user_id', $user->id)->where('is_default', true)->first();
         }
 
-        // If no account exists, provide an empty object to avoid undefined property errors
         if (!$bankDetails) {
             $bankDetails = (object)[
                 'type' => 'bank',
@@ -74,33 +69,32 @@ class WithdrawalController extends Controller
             ];
         }
 
-        // Fetch all withdrawal requests from the withdrawals table
+        // Fetch all vendor withdrawal requests from the withdrawals table (type = vendor)
         $withdrawals = Withdrawal::where('user_id', $user->id)
+            ->where('type', 'vendor')
             ->orderBy('created_at', 'desc')
             ->get();
 
-       $allWithdrawals = $withdrawals->map(function ($wd) use ($userCurrency, $toNGN, $symbols) {
-    $amountInUserCurrency = $wd->amount / $toNGN[$userCurrency];
-    $statusText = ucfirst($wd->status);
+        $allWithdrawals = $withdrawals->map(function ($wd) use ($userCurrency, $toNGN, $symbols) {
+            $amountInUserCurrency = $wd->amount / $toNGN[$userCurrency];
+            $statusText = ucfirst($wd->status);
+            $details = $wd->account_details ?? [];
+            $type = $details['type'] ?? 'bank';
+            $description = $type === 'bank'
+                ? ($details['bank_name'] ?? 'Bank') . ' - ' . ($details['account_number'] ?? '')
+                : ($details['momo_provider'] ?? 'Momo') . ' - ' . ($details['momo_number'] ?? '');
 
-    // account_details is already cast to array by the model
-    $details = $wd->account_details ?? [];
-    $type = $details['type'] ?? 'bank';
-    $description = $type === 'bank'
-        ? ($details['bank_name'] ?? 'Bank') . ' - ' . ($details['account_number'] ?? '')
-        : ($details['momo_provider'] ?? 'Momo') . ' - ' . ($details['momo_number'] ?? '');
+            return [
+                'currency' => $userCurrency,
+                'amount' => -$amountInUserCurrency,
+                'type' => 'Withdrawal',
+                'description' => $description,
+                'date' => $wd->created_at->format('M d, Y'),
+                'status' => $statusText,
+            ];
+        });
 
-    return [
-        'currency' => $userCurrency,
-        'amount' => -$amountInUserCurrency,
-        'type' => 'Withdrawal',
-        'description' => $description,
-        'date' => $wd->created_at->format('M d, Y'),
-        'status' => $statusText,
-    ];
-});
-
-        return view('affiliate.withdrawal', compact(
+        return view('vendor.withdrawal', compact(
             'balance',
             'withdrawalFee',
             'bankDetails',
@@ -114,15 +108,12 @@ class WithdrawalController extends Controller
         ));
     }
 
-    /**
-     * Store a new withdrawal request.
-     */
     public function store(Request $request)
     {
         $user = Auth::user();
 
-        // Check if user already has a pending withdrawal
-        if (Withdrawal::where('user_id', $user->id)->where('status', 'pending')->exists()) {
+        // Check if user already has a pending vendor withdrawal
+        if (Withdrawal::where('user_id', $user->id)->where('type', 'vendor')->where('status', 'pending')->exists()) {
             return back()->with('error', 'You already have a pending withdrawal request. Please wait for it to be processed.');
         }
 
@@ -143,17 +134,16 @@ class WithdrawalController extends Controller
         $feeInNGN = 100;
         $totalDeduction = $amountInNGN + $feeInNGN;
 
-        // Check if affiliate balance is sufficient (will be deducted later upon approval)
-        if ($user->affiliate_balance < $totalDeduction) {
-            return back()->with('error', 'Insufficient affiliate balance.');
+        // Check if vendor balance is sufficient
+        if ($user->vendor_balance < $totalDeduction) {
+            return back()->with('error', 'Insufficient vendor balance.');
         }
 
         DB::transaction(function () use ($user, $amountInNGN, $feeInNGN, $totalDeduction, $amount, $userCurrency, $request) {
-            // 1. Handle bank account (update, reuse, or create)
+            // Handle bank account (same as affiliate)
             $account = null;
 
             if ($request->account_id) {
-                // Update existing account
                 $account = UserBankAccount::where('user_id', $user->id)->findOrFail($request->account_id);
                 if ($request->account_type == 'bank') {
                     $account->update([
@@ -175,7 +165,6 @@ class WithdrawalController extends Controller
                     ]);
                 }
             } else {
-                // Check if an account with the same details already exists
                 $existingAccount = null;
                 if ($request->account_type == 'bank') {
                     $existingAccount = UserBankAccount::where('user_id', $user->id)
@@ -194,7 +183,6 @@ class WithdrawalController extends Controller
                 if ($existingAccount) {
                     $account = $existingAccount;
                 } else {
-                    // Create new account
                     $hasDefault = UserBankAccount::where('user_id', $user->id)->where('is_default', true)->exists();
                     if ($request->account_type == 'bank') {
                         $account = UserBankAccount::create([
@@ -217,18 +205,18 @@ class WithdrawalController extends Controller
                 }
             }
 
-            // 2. Create transaction record with status 'pending' (no balance change)
-            $oldBalance = $user->affiliate_balance;
+            // Create transaction record with status 'pending' (no balance change)
+            $oldBalance = $user->vendor_balance;
             $transaction = Transaction::create([
                 'user_id' => $user->id,
                 'type' => 'withdrawal',
                 'amount' => $amountInNGN,
                 'currency' => 'NGN',
-                'balance_type' => 'affiliate',
+                'balance_type' => 'vendor',
                 'balance_before' => $oldBalance,
-                'balance_after' => $oldBalance, // same – no deduction yet
-                'description' => "Withdrawal request (pending approval) to " . ($request->account_type == 'bank' ? 'bank' : 'mobile money'),
-                'reference' => 'WD_' . uniqid(),
+                'balance_after' => $oldBalance,
+                'description' => "Vendor withdrawal request (pending approval) to " . ($request->account_type == 'bank' ? 'bank' : 'mobile money'),
+                'reference' => 'WD_V_' . uniqid(),
                 'payment_gateway' => null,
                 'status' => 'pending',
                 'meta' => [
@@ -239,10 +227,10 @@ class WithdrawalController extends Controller
                 ],
             ]);
 
-            // 3. Create withdrawal record for admin tracking, including type = 'affiliate'
+            // Create withdrawal record for admin tracking, type = 'vendor'
             Withdrawal::create([
                 'user_id' => $user->id,
-                'type' => 'affiliate', // <-- set type
+                'type' => 'vendor',
                 'amount' => $amountInNGN,
                 'currency' => 'NGN',
                 'status' => 'pending',
@@ -259,6 +247,6 @@ class WithdrawalController extends Controller
             ]);
         });
 
-        return redirect()->route('affiliate.withdrawals')->with('success', 'Withdrawal request submitted successfully. It will be processed within 24 hours.');
+        return redirect()->route('vendor.withdrawals')->with('success', 'Withdrawal request submitted successfully. It will be processed within 24 hours.');
     }
 }

@@ -97,7 +97,7 @@
                             <i class="fas fa-bars"></i>
                         </button>
                         <div>
-                            <h3 class="fw-bold d-block mb-0">Good Morning, {{ $firstName }}</h3>
+                            <h3 class="fw-bold d-block mb-0">Welcome , {{ $firstName }} !</h3>
                             <small class="text-muted d-block">
                                 Today <span style="color: #065754;">{{ now()->format('M d') }}</span>
                             </small>

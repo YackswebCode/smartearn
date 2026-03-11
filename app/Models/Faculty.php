@@ -12,4 +12,5 @@ class Faculty extends Model
     {
         return $this->hasMany(Track::class);
     }
+    
 }

@@ -32,4 +32,5 @@ class Track extends Model
 {
     return $this->hasMany(Lecture::class)->orderBy('order');
 }
+
 }

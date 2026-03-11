@@ -21,4 +21,15 @@ class Commission extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+
+public function affiliate()
+{
+    return $this->belongsTo(User::class, 'affiliate_id');
+}
+
+public function vendor()
+{
+    return $this->belongsTo(User::class, 'vendor_id');
+}
 }

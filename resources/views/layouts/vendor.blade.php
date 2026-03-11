@@ -70,8 +70,8 @@
                 <hr class="my-2">
 
                 <!-- Group 3 -->
-                <a href="{{ route('affiliate.wallet') }}" class="list-group-item list-group-item-action bg-transparent text-white">
-                    <i class="fas fa-wallet me-3"></i>Wallet
+                <a href="{{ route('vendor.withdrawals') }}" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('vendor.withdrawals') ? 'active' : '' }}">
+                    <i class="fas fa-money-bill-wave me-3"></i>Withdraw Funds
                 </a>
                 <hr class="my-2">
 

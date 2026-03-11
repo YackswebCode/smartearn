@@ -28,6 +28,7 @@ class User extends Authenticatable
         'verification_code_expires_at', // <-- added
         'reset_code',                  // optional but good
         'reset_code_expires_at',        // optional
+        'is_banned',
     ];
 
     protected $casts = [
@@ -36,6 +37,7 @@ class User extends Authenticatable
         'reset_code_expires_at' => 'datetime',
         'subscription_expires_at' => 'datetime',
         'marketplace_subscribed' => 'boolean',
+        'is_banned' => 'boolean',
     ];
 
     // app/Models/User.php
@@ -57,5 +59,17 @@ class User extends Authenticatable
     public function bankAccounts()
     {
         return $this->hasMany(UserBankAccount::class);
+    }
+
+    // Relationship for products (vendor)
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'vendor_id');
+    }
+
+    // Relationship for orders (vendor)
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'vendor_id');
     }
 }
