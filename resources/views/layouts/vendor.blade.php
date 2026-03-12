@@ -93,12 +93,7 @@
                         <button class="btn btn-outline-secondary d-lg-none me-3" id="menu-toggle" aria-controls="sidebar-wrapper" aria-expanded="false" aria-label="Toggle sidebar">
                             <i class="fas fa-bars"></i>
                         </button>
-                        <div>
-                            <h3 class="fw-bold d-block mb-0">Good Morning, {{ $firstName }}</h3>
-                            <small class="text-muted d-block">
-                                Today <span style="color: #065754;">{{ now()->format('M d') }}</span>
-                            </small>
-                        </div>
+                 
                     </div>
 
                     <!-- Right side: profile dropdown (same as affiliate) -->

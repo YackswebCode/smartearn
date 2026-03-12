@@ -4,8 +4,21 @@
 @section('title', 'Vendor Dashboard')
 
 @section('content')
+
+ @php
+        $user = Auth::user();
+        $displayName = $user->name ?? 'Guest User';
+        $email = $user->email ?? 'guest@example.com';
+        $firstName = explode(' ', $displayName)[0];
+        $initial = strtoupper(substr($displayName, 0, 1));
+    @endphp
 <div class="container-fluid py-4">
-    <!-- Header -->
+     <div class="col-12 mb-4">
+    <h3 class="fw-bold d-block mb-0">Welcome, {{ $firstName }}!</h3>
+      <small class="text-muted d-block">
+       Today <span style="color: #065754;">{{ now()->format('M d') }}</span>
+    </small>
+    </div>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Vendor Dashboard</h2>
     </div>

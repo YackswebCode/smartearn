@@ -27,12 +27,12 @@
 
     <div class="d-flex" id="wrapper">
         <!-- Sidebar -->
-        <div class="bg-green text-white" id="sidebar-wrapper" style="min-width: 250px; background-color: #065754;">
+        <div class="bg-green text-white" id="sidebar-wrapper">
             <div class="sidebar-heading text-center py-4">
                 <img src="{{ asset('images/logo.png') }}" alt="SmartEarn" height="40">
             </div>
             <div class="px-3 mb-3">
-                <button class="btn btn-light-green w-100" style="background-color: #4CAF50; border: none; color: white;">
+                <button class="btn btn-light-green w-100">
                     <i class="fas fa-user-check me-2"></i>Affiliate
                 </button>
             </div>
@@ -82,9 +82,9 @@
         <!-- Overlay for mobile -->
         <div id="sidebar-overlay" aria-hidden="true"></div>
 
-      <div id="page-content-wrapper" class="w-100 d-flex flex-column" style="background-color: #EEF0F8; min-height: 100vh;">
+        <div id="page-content-wrapper" class="w-100 d-flex flex-column" style="background-color: #EEF0F8; min-height: 100vh;">
             <!-- Top Navigation -->
-            <nav class="navbar navbar-expand-lg navbar-light py-2 px-4" style="background-color: #EEF0F8;">
+            <nav class="navbar navbar-expand-lg navbar-light py-2 px-4">
                 <div class="container-fluid">
                     <!-- Left side: toggle button + greeting -->
                     <div class="d-flex align-items-center">
@@ -96,20 +96,15 @@
                             aria-label="Toggle sidebar">
                             <i class="fas fa-bars"></i>
                         </button>
-                        <div>
-                            <h3 class="fw-bold d-block mb-0">Welcome , {{ $firstName }} !</h3>
-                            <small class="text-muted d-block">
-                                Today <span style="color: #065754;">{{ now()->format('M d') }}</span>
-                            </small>
-                        </div>
+                 
                     </div>
 
                     <!-- Right side: profile dropdown -->
                     <div class="d-flex align-items-center ms-auto">
                         <div class="dropdown">
-                            <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #48BB78;  padding: 0.5rem 1rem; border-radius: 0.25rem;">
+                            <a class="d-flex align-items-center text-decoration-none dropdown-toggle profile-dropdown-btn" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #48BB78; padding: 0.5rem 1rem; border-radius: 0.25rem;">
                                 <!-- Avatar on the left -->
-                                <div class="rounded-circle bg-green text-white d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px; background-color: #065754 !important;">
+                                <div class="rounded-circle bg-green text-white d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
                                     {{ $initial }}
                                 </div>
                                 <!-- User info on the right -->
@@ -137,7 +132,7 @@
                 </div>
             </nav>
 
-           <!-- Main Content Area - flex-grow to fill remaining space -->
+            <!-- Main Content Area - flex-grow to fill remaining space -->
             <div class="container-fluid p-4 flex-grow-1">
                 @yield('content')
             </div>
