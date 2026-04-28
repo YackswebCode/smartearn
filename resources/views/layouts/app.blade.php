@@ -33,11 +33,11 @@
         {{-- ===== NAVBAR – Signature Green with blur ===== --}}
         <nav class="navbar navbar-expand-lg sticky-top" style="background: rgba(6,87,84,0.95); backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(6,87,84,0.15);">
             <div class="container">
-                <!-- Brand with iconic SE badge -->
-                <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ url('/') }}">
+               <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ url('/') }}">
                     <span class="brand-icon d-flex align-items-center justify-content-center" 
-                          style="background-color: white; color: var(--primary-green); width: 40px; height: 40px; border-radius: 10px; margin-right: 10px; font-size: 1.25rem; font-weight: 800; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
-                        SE
+                        style="background-color: white; color: var(--primary-green); width: 40px; height: 40px; border-radius: 10px; margin-right: 10px; font-size: 1.25rem; font-weight: 800; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
+                        <img src="{{ asset('images/logo.png') }}" alt="SmartEarn" height="40"
+                            onerror="this.style.display='none'; this.parentNode.innerHTML='<span style=\'color: var(--primary-green); font-size: 1.25rem; font-weight: 800;\'>SE</span>';">
                     </span>
                     <span class="text-white" style="font-size: 1.5rem; letter-spacing: -0.5px;">SmartEarn</span>
                 </a>
@@ -222,7 +222,7 @@
                 </p>
             </div>
             <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
-                <img src="https://placehold.co/200x30/043a38/ffffff?text=Flutterwave+•+Paystack" 
+                <img src="https://placehold.co/200x30/043a38/ffffff?text=Flutterwave" 
                      alt="Payment partners" class="img-fluid" style="opacity: 0.7;">
             </div>
         </div>

@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Affiliate;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -26,7 +28,7 @@ class TopAffiliateController extends Controller
         'KES' => 'KES',
     ];
 
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         $userCurrency = $user->currency;
@@ -36,64 +38,58 @@ class TopAffiliateController extends Controller
         $currentMonth = now()->startOfMonth();
         $endOfMonth = now()->endOfMonth();
 
-        // Get all affiliates with completed orders this month
-        $affiliateStats = Order::where('status', 'completed')
-            ->whereBetween('created_at', [$currentMonth, $endOfMonth])
-            ->select(
+        // --- Filter logic ---
+        $productId = $request->input('product_id');
+        $selectedProduct = null;
+
+        if ($productId) {
+            $selectedProduct = Product::find($productId);
+            if (!$selectedProduct) {
+                $productId = null; // ignore invalid ids
+            }
+        }
+
+        // Base query
+        $query = Order::where('status', 'completed')
+            ->whereBetween('created_at', [$currentMonth, $endOfMonth]);
+
+        if ($productId) {
+            $query->where('product_id', $productId);
+        }
+
+        $affiliateStats = $query->select(
                 'affiliate_id',
-                DB::raw('COUNT(*) as sales_count'),
-                DB::raw('SUM(amount) as total_ngn')
+                DB::raw('COUNT(*) as sales_count')
             )
             ->groupBy('affiliate_id')
-            ->orderByDesc('total_ngn')
+            ->orderByDesc('sales_count')
             ->get();
 
-        // Prepare leaderboard array
+        // Prepare leaderboard
         $leaderboard = [];
         $position = 1;
         foreach ($affiliateStats as $stat) {
             $affiliate = User::find($stat->affiliate_id);
             if (!$affiliate) continue;
 
-            $totalNgn = $stat->total_ngn;
-            $totalUserCurrency = $totalNgn / $toNGN[$userCurrency];
-
-            $level = $this->getLevel($totalNgn);
-            $awardNgn = $this->getAwardNgn($position, $totalNgn);
-            $awardUserCurrency = $awardNgn / $toNGN[$userCurrency];
-
             $leaderboard[] = [
                 'position' => $position,
                 'name' => $affiliate->name,
-                'level' => $level,
+                'product_name' => $productId ? ($selectedProduct->name ?? 'Unknown') : 'All Products',
                 'sales' => $stat->sales_count,
-                'total' => $totalUserCurrency,
-                'total_formatted' => $symbols[$userCurrency] . number_format($totalUserCurrency, 2),
-                'award_formatted' => $symbols[$userCurrency] . number_format($awardUserCurrency, 2),
             ];
             $position++;
         }
 
-        return view('affiliate.top_affiliate', compact('leaderboard', 'userCurrency', 'symbols'));
-    }
+        // Products for filter dropdown (all products)
+        $products = Product::orderBy('name')->get();
 
-    private function getLevel($totalNgn)
-    {
-        $usdToNgn = $this->toNGN['USD'];
-        if ($totalNgn >= 10000 * $usdToNgn) return 'Platinum';
-        if ($totalNgn >= 5000 * $usdToNgn) return 'Gold';
-        if ($totalNgn >= 1000 * $usdToNgn) return 'Silver';
-        return 'Bronze';
-    }
-
-    private function getAwardNgn($position, $totalNgn)
-    {
-        $usdToNgn = $this->toNGN['USD'];
-        if ($position == 1) return 500 * $usdToNgn;
-        if ($position == 2) return 300 * $usdToNgn;
-        if ($position == 3) return 200 * $usdToNgn;
-        if ($totalNgn >= 5000 * $usdToNgn) return 100 * $usdToNgn;
-        if ($totalNgn >= 1000 * $usdToNgn) return 50 * $usdToNgn;
-        return 10 * $usdToNgn;
+        return view('affiliate.top_affiliate', compact(
+            'leaderboard',
+            'userCurrency',
+            'symbols',
+            'products',
+            'productId'  // selected product id for dropdown
+        ));
     }
 }

@@ -29,7 +29,10 @@
         <!-- Sidebar -->
         <div class="bg-green text-white" id="sidebar-wrapper">
             <div class="sidebar-heading text-center py-4">
-                <img src="{{ asset('images/logo.png') }}" alt="SmartEarn" height="40">
+                <img src="{{ asset('images/logo.png') }}" 
+                     alt="SmartEarn" height="40"
+                     onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='inline-block';">
+                <span class="text-white fw-bold" style="display:none; font-size:1.5rem;">SmartEarn</span>
             </div>
             <div class="px-3 mb-3">
                 <button class="btn btn-light-green w-100">
@@ -43,32 +46,26 @@
                 <a href="{{ route('affiliate.dashboard') }}" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('affiliate.dashboard') ? 'active' : '' }}">
                     <i class="fas fa-tachometer-alt me-3"></i>Dashboard
                 </a>
-                <a href="{{ route('affiliate.orders') }}" class="list-group-item list-group-item-action bg-transparent text-white">
-                    <i class="fas fa-shopping-cart me-3"></i>Order & Sales
-                </a>
                 <a href="{{ route('affiliate.marketplace') }}" class="list-group-item list-group-item-action bg-transparent text-white">
                     <i class="fas fa-store me-3"></i>Marketplace
                 </a>
                 <a href="{{ route('affiliate.top_affiliate') }}" class="list-group-item list-group-item-action bg-transparent text-white">
-                    <i class="fas fa-crown me-3"></i>Top Affiliate
+                    <i class="fas fa-crown me-3"></i>Affiliate Leaderboard 
+                </a>
+                <a href="{{ route('affiliate.challenges') }}" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('affiliate.challenges') ? 'active' : '' }}">
+                    <i class="fas fa-trophy me-3"></i>Affiliate Challenge
                 </a>
                 <a href="{{ route('affiliate.edit_profile') }}" class="list-group-item list-group-item-action bg-transparent text-white">
                     <i class="fas fa-user-edit me-3"></i>Edit Profile
                 </a>
-                <hr class="my-2">
-
-                <!-- Group 2 -->
-                <a href="{{ route('affiliate.skill_garage') }}" class="list-group-item list-group-item-action bg-transparent text-white">
-                    <i class="fas fa-laptop-code me-3"></i>Skill Garage
-                </a>
-                <a href="{{ route('affiliate.business_university') }}" class="list-group-item list-group-item-action bg-transparent text-white">
-                    <i class="fas fa-graduation-cap me-3"></i>Business University
-                </a>
-                <hr class="my-2">
-
-                <!-- Group 3 -->
-                <a href="{{ route('affiliate.wallet') }}" class="list-group-item list-group-item-action bg-transparent text-white">
+                 <a href="{{ route('affiliate.wallet') }}" class="list-group-item list-group-item-action bg-transparent text-white">
                     <i class="fas fa-wallet me-3"></i>Wallet
+                </a>
+                <hr class="my-2">
+
+              <!-- Group 2 -->
+                <a href="{{ route('affiliate.digital_university') }}" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('affiliate.digital_university') ? 'active' : '' }}">
+                    <i class="fas fa-university me-3"></i>Digital University
                 </a>
                 <hr class="my-2">
 

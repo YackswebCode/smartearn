@@ -3,6 +3,38 @@
 @section('title', 'Withdraw Funds')
 
 @section('content')
+
+{{-- --------------------- PIN Setup Modal --------------------- --}}
+@if(!$user->withdrawal_pin)
+<div class="modal fade" id="pinSetupModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="fas fa-lock me-2"></i>Set Withdrawal PIN</h5>
+            </div>
+            <form method="POST" action="{{ route('affiliate.store_pin') }}">
+                @csrf
+                <div class="modal-body">
+                    <p class="text-muted">You must set a 4‑digit PIN to make withdrawals.</p>
+                    <div class="mb-3">
+                        <label for="modal_pin" class="form-label">Enter PIN</label>
+                        <input type="password" name="pin" id="modal_pin" class="form-control" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modal_pin_confirmation" class="form-label">Confirm PIN</label>
+                        <input type="password" name="pin_confirmation" id="modal_pin_confirmation" class="form-control" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success"><i class="fas fa-save me-1"></i>Save PIN</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
+{{-- --------------------- Main Page Content --------------------- --}}
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Withdraw from Affiliate Balance</h2>
@@ -54,10 +86,21 @@
                     </div>
                     @endif
 
+                    {{-- Withdrawal Form --}}
                     <form method="POST" action="{{ route('affiliate.withdrawals.store') }}">
                         @csrf
                         @if($selectedAccountId)
                             <input type="hidden" name="account_id" value="{{ $selectedAccountId }}">
+                        @endif
+
+                        {{-- ---------- PIN INPUT (only if PIN is set) ---------- --}}
+                        @if($user->withdrawal_pin)
+                        <div class="mb-3">
+                            <label for="pin" class="form-label fw-semibold">Enter Withdrawal PIN</label>
+                            <input type="password" name="pin" id="pin" class="form-control @error('pin') is-invalid @enderror" 
+                                   maxlength="4" inputmode="numeric" pattern="[0-9]{4}" required>
+                            @error('pin') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
                         @endif
 
                         <div class="mb-3">
@@ -120,21 +163,26 @@
                                 @error('momo_number') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                         </div>
-                         @if($hasPending)
+
+                        @if($hasPending)
                         <div class="alert alert-info">
                             <i class="fas fa-clock me-2"></i>
                             You have a pending withdrawal request. You cannot make another withdrawal until it is processed.
                         </div>
                         @endif
+
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <span class="text-muted">Withdrawal Fee: <strong>{{ $symbols[$userCurrency] }}{{ number_format($withdrawalFee / $toNGN[$userCurrency], 2) }}</strong></span>
-                            <button type="submit" class="btn btn-success px-5" {{ $hasPending ? 'disabled' : '' }}>Withdraw</button>
+                            <button type="submit" class="btn btn-success px-5" {{ ($hasPending || !$user->withdrawal_pin) ? 'disabled' : '' }}>
+                                <i class="fas fa-paper-plane me-1"></i> Withdraw
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
+        {{-- Right column: Balance card --}}
         <div class="col-lg-5 mb-4">
             <div class="card border-0 shadow-sm bg-success text-white">
                 <div class="card-body text-center p-4">
@@ -146,7 +194,7 @@
         </div>
     </div>
 
-    <!-- Recent Withdrawal Transactions -->
+    {{-- Recent Withdrawals --}}
     <div class="mt-4">
         <h4 class="fw-semibold mb-3">Recent Withdrawals</h4>
 
@@ -182,49 +230,46 @@
             </div>
         </div>
 
-<!-- Withdrawals Table -->
-<div class="card border-0 shadow-sm">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table id="withdrawals-table" class="table table-hover align-middle">
-                <thead class="table-success">
-                    <tr>
-                        <th>Currency</th>
-                        <th>Amount</th>
-                        <th>Type</th>
-                        <th>Description</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($allWithdrawals as $wd)
-                    <tr>
-                        <td>{{ $wd['currency'] }}</td>
-                        <td class="text-danger">{{ $symbols[$userCurrency] }}{{ number_format(abs($wd['amount']), 2) }}</td>
-                        <td>{{ $wd['type'] }}</td>
-                        <td>{{ $wd['description'] }}</td>
-                        <td>
-                            @if($wd['status'] == 'Pending')
-                                <span class="badge bg-warning">Pending</span>
-                            @elseif($wd['status'] == 'Completed')
-                                <span class="badge bg-success">Completed</span>
-                            @else
-                                <span class="badge bg-secondary">{{ $wd['status'] }}</span>
-                            @endif
-                        </td>
-                        <td>{{ $wd['date'] }}</td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="6" class="text-center">No withdrawal records found.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+        <!-- Withdrawals Table -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="withdrawals-table" class="table table-hover align-middle">
+                        <thead class="table-success">
+                            <tr>
+                                <th>Currency</th>
+                                <th>Amount</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($allWithdrawals as $wd)
+                            <tr>
+                                <td>{{ $wd['currency'] }}</td>
+                                <td class="text-danger">{{ $symbols[$userCurrency] }}{{ number_format(abs($wd['amount']), 2) }}</td>
+                                <td>{{ $wd['type'] }}</td>
+                                <td>{{ $wd['description'] }}</td>
+                                <td>
+                                    @if($wd['status'] == 'Pending')
+                                        <span class="badge bg-warning">Pending</span>
+                                    @elseif($wd['status'] == 'Completed')
+                                        <span class="badge bg-success">Completed</span>
+                                    @else
+                                        <span class="badge bg-secondary">{{ $wd['status'] }}</span>
+                                    @endif
+                                </td>
+                                <td>{{ $wd['date'] }}</td>
+                            </tr>
+                            @empty
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
     </div>
 </div>
 @endsection
@@ -232,6 +277,13 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // ---------- PIN MODAL AUTO‑SHOW (if not set) ----------
+    @if(!$user->withdrawal_pin)
+        const pinModal = new bootstrap.Modal(document.getElementById('pinSetupModal'));
+        pinModal.show();
+    @endif
+
+    // ---------- Bank / Momo Toggle ----------
     const typeBank = document.getElementById('typeBank');
     const typeMomo = document.getElementById('typeMomo');
     const bankFields = document.getElementById('bankFields');
@@ -241,18 +293,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if (typeBank.checked) {
             bankFields.style.display = 'block';
             momoFields.style.display = 'none';
-            // enable/disable fields if needed (but they're just hidden, no need to disable)
         } else {
             bankFields.style.display = 'none';
             momoFields.style.display = 'block';
         }
     }
 
-    typeBank.addEventListener('change', toggleFields);
-    typeMomo.addEventListener('change', toggleFields);
+    if (typeBank && typeMomo) {
+        typeBank.addEventListener('change', toggleFields);
+        typeMomo.addEventListener('change', toggleFields);
+    }
 
-    // DataTable initialization
-    const table = $('#transactions-table').DataTable({
+    // ---------- DataTable ----------
+    const table = $('#withdrawals-table').DataTable({
         paging: true,
         searching: true,
         ordering: true,

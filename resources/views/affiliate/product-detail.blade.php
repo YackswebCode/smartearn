@@ -4,79 +4,107 @@
 
 @section('content')
 <div class="container py-4">
+
+    <!-- Header -->
     <div class="row mb-4">
         <div class="col-12">
             <h2>Product Details</h2>
         </div>
     </div>
 
-    <!-- Top Buttons Section -->
+    <!-- Top Buttons -->
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-end">
-            <a href="#" class="btn btn-outline-success me-2">Payment Page</a>
-            <a href="#" class="btn btn-success">Sales Page</a>
+
+            {{-- 🔥 Creator Payment Page --}}
+            <a href="{{ url('/p/' . $product->slug) }}" class="btn btn-outline-success me-2">
+                Payment Page
+            </a>
+
+             @php
+                    $affiliateId = auth()->id();
+
+                 
+                    $affiliateLinksales = route('affiliate.product.public', [
+                        'affiliateId' => $affiliateId,
+                        'productSlug' => $product->slug
+                    ]);
+
+                @endphp
+
+            {{-- 🔥 Sales Page (Affiliate dashboard analytics) --}}
+            <a href="{{  $affiliateLinksales }}" class="btn btn-success">
+                Sales Page
+            </a>
         </div>
     </div>
 
-    <!-- Product Image and Basic Info -->
+    <!-- Product Info -->
     <div class="row g-4 mb-4">
-        <!-- Product Image -->
+
+        <!-- Image -->
         <div class="col-md-4">
             <div class="card border-0 shadow-sm h-100">
-                <div class="card-body p-0">
-                    <div style="height: 250px; overflow: hidden; border-radius: 0.5rem;">
-                        @if($product->image)
-                            <img src="{{ asset('storage/' . $product->image) }}" 
-                                 alt="{{ $product->name }}" 
-                                 class="w-100 h-100" 
-                                 style="object-fit: cover;">
-                        @else
-                            <div class="bg-light d-flex align-items-center justify-content-center h-100">
-                                <i class="fas fa-image fa-4x text-muted"></i>
-                            </div>
-                        @endif
-                    </div>
+                <div style="height:250px;overflow:hidden;border-radius:8px;">
+                    @if($product->image)
+                        <img src="{{ asset('storage/'.$product->image) }}"
+                             class="w-100 h-100"
+                             style="object-fit:cover;">
+                    @else
+                        <div class="bg-light d-flex align-items-center justify-content-center h-100">
+                            <i class="fas fa-image fa-3x text-muted"></i>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
 
-        <!-- Product Name and Rating -->
+        <!-- Name -->
         <div class="col-md-8">
-            <div class="card border-0 shadow-sm h-100 p-4" style="background-color: #065754; color: white;">
+            <div class="card border-0 shadow-sm h-100 p-4 text-white"
+                 style="background:#065754;">
+
                 <div class="d-flex align-items-center mb-3">
+
+                    @php $rating = round($product->rating); @endphp
+
                     <div class="me-2">
-                        @php
-                            $rating = round($product->rating);
-                        @endphp
-                        @for($i = 0; $i < $rating; $i++)
-                            <i class="fas fa-star text-warning"></i>
-                        @endfor
-                        @for($i = $rating; $i < 5; $i++)
-                            <i class="far fa-star text-warning"></i>
+                        @for($i=1;$i<=5;$i++)
+                            <i class="fa{{ $i <= $rating ? 's' : 'r' }} fa-star text-warning"></i>
                         @endfor
                     </div>
+
                     <h4 class="mb-0">{{ $product->name }}</h4>
                 </div>
-                <!-- Additional info can go here -->
+
+                <p>{{ $product->description }}</p>
             </div>
         </div>
     </div>
 
-    <!-- Vendor Info Scroll Row (unchanged) -->
+    <!-- Vendor Info -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card border-0 shadow-sm p-3 d-flex flex-column align-items-center justify-content-center" 
-                style="background-color: #065754; color: white; min-height: 150px;">
-                <div class="d-flex overflow-auto mb-3 justify-content-center" style="gap: 2rem;">
-                    <div class="p-2 border rounded flex-shrink-0 text-center">
-                        <strong style="color: #48BB78;">Vendor Name:</strong> Oyebambo
+            <div class="card border-0 shadow-sm p-3 text-white"
+                 style="background:#065754;">
+
+                <div class="row text-center">
+
+                    <div class="col-md-4">
+                        <strong style="color:#48BB78;">Vendor:</strong><br>
+                       {{ $product->vendor->name ?? 'Unknown Vendor' }}
                     </div>
-                    <div class="p-2 border rounded flex-shrink-0 text-center">
-                        <strong style="color: #48BB78;">Sales Price:</strong> {{ $product->currency }} {{ number_format($product->price, 2) }}
+
+                    <div class="col-md-4">
+                        <strong style="color:#48BB78;">Price:</strong><br>
+                        {{ $product->currency }} {{ number_format($product->price,2) }}
                     </div>
-                    <div class="p-2 border rounded flex-shrink-0 text-center">
-                        <strong style="color: #48BB78;">Commission:</strong> {{ $product->commission_percent }}%
+
+                    <div class="col-md-4">
+                        <strong style="color:#48BB78;">Commission:</strong><br>
+                        {{ $product->commission_percent }}%
                     </div>
+
                 </div>
             </div>
         </div>
@@ -84,69 +112,71 @@
 
     <hr>
 
-    <!-- Affiliate Links Card (unchanged) -->
+    <!-- 🔥 AFFILIATE LINKS -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="card border-0 shadow-sm p-3">
-                <h5>Get your affiliate link</h5>
+
+                <h5>Affiliate Links</h5>
 
                 @php
                     $affiliateId = auth()->id();
-                    $productKey = $product->affiliate_slug;
-                    $publicLink = route('affiliate.product.public', ['affiliateId' => $affiliateId, 'productSlug' => $productKey]);
+
+                    // Affiliate link (tracked)
+                    $affiliateLink = route('affiliate.product.public', [
+                        'affiliateId' => $affiliateId,
+                        'productSlug' => $product->slug
+                    ]);
+
+                    // Creator link (direct vendor sales)
+                    $creatorLink = url('/p/' . $product->slug . '?ref=creator_' . $product->vendor_id);
+
+                    // Payment link
+                    $paymentLink = url('/p/' . $product->slug);
                 @endphp
 
-                <h6>Copy Affiliate Link Below 👇</h6>
-                <div class="input-group mb-2">
-                    <input type="text" class="form-control" value="{{ $publicLink }}" readonly>
-                    <button class="btn btn-outline-secondary" onclick="copyToClipboard(this)">
+                <!-- Affiliate Link -->
+                <h6>Affiliate Link</h6>
+                <div class="input-group mb-3">
+                    <input class="form-control" value="{{ $affiliateLink }}" readonly>
+                    <button class="btn btn-outline-secondary" onclick="copy(this)">
                         <i class="fas fa-copy"></i>
                     </button>
                 </div>
 
-                <h6>Copy Link for Affiliate Webinar Page below</h6>
-                <div class="input-group mb-2">
-                    <input type="text" class="form-control" value="{{ config('app.url') }}/webinar/{{ $affiliateId }}/{{ $productKey }}" readonly>
-                    <button class="btn btn-outline-secondary" onclick="copyToClipboard(this)">
+                <!-- Creator Link -->
+                <h6>Creator Sales Link</h6>
+                <div class="input-group mb-3">
+                    <input class="form-control" value="{{ $creatorLink }}" readonly>
+                    <button class="btn btn-outline-secondary" onclick="copy(this)">
                         <i class="fas fa-copy"></i>
                     </button>
                 </div>
 
-                <h6>Copy Affiliate Link Payment Page below</h6>
-                <div class="input-group mb-2">
-                    <input type="text" class="form-control" value="{{ config('app.url') }}/pay/{{ $affiliateId }}/{{ $productKey }}" readonly>
-                    <button class="btn btn-outline-secondary" onclick="copyToClipboard(this)">
+                <!-- Payment Page -->
+                <!-- <h6>Payment Page Link</h6>
+                <div class="input-group mb-3">
+                    <input class="form-control" value="{{ $paymentLink }}" readonly>
+                    <button class="btn btn-outline-secondary" onclick="copy(this)">
                         <i class="fas fa-copy"></i>
                     </button>
-                </div>
+                </div> -->
+
             </div>
         </div>
     </div>
 
-    <!-- Vendor Information Card (unchanged) -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm p-3">
-                <h5>Vendor Information</h5>
-                <p><strong>Name:</strong> Oyebambo Moreira</p>
-                <p><strong>About me:</strong> An Ecommerce Expert</p>
-                <p><strong>Business Description:</strong> Building one of the biggest Ecommerce Education networks</p>
-            </div>
-        </div>
-    </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
-function copyToClipboard(button) {
-    const input = button.previousElementSibling;
+function copy(btn){
+    const input = btn.previousElementSibling;
     input.select();
-    input.setSelectionRange(0, 99999);
-    navigator.clipboard.writeText(input.value).then(() => {
-        button.innerHTML = '<i class="fas fa-check"></i>';
-        setTimeout(() => button.innerHTML = '<i class="fas fa-copy"></i>', 1500);
-    });
+    navigator.clipboard.writeText(input.value);
+    btn.innerHTML = '<i class="fas fa-check"></i>';
+    setTimeout(()=>btn.innerHTML='<i class="fas fa-copy"></i>',1500);
 }
 </script>
 @endpush

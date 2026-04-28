@@ -34,4 +34,14 @@ class Product extends Model
     {
         return $this->belongsTo(User::class, 'vendor_id');
     }
+
+        public function getCreatorLinkAttribute()
+    {
+        return url('/p/' . $this->slug . '?ref=creator_' . $this->vendor_id);
+    }
+
+        public function getAffiliateLinkAttribute()
+    {
+        return url('/aff/' . auth()->id() . '/' . $this->slug);
+    }
 }

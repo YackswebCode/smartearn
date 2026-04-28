@@ -1,30 +1,104 @@
 {{-- resources/views/vendor/dashboard.blade.php --}}
 @extends('layouts.vendor')
 
-@section('title', 'Vendor Dashboard')
+@section('title', 'Creator Dashboard')
 
 @section('content')
 
- @php
-        $user = Auth::user();
-        $displayName = $user->name ?? 'Guest User';
-        $email = $user->email ?? 'guest@example.com';
-        $firstName = explode(' ', $displayName)[0];
-        $initial = strtoupper(substr($displayName, 0, 1));
-    @endphp
+@php
+    $user = Auth::user();
+    $displayName = $user->name ?? 'Guest User';
+    $email = $user->email ?? 'guest@example.com';
+    $firstName = explode(' ', $displayName)[0];
+    $initial = strtoupper(substr($displayName, 0, 1));
+@endphp
+
 <div class="container-fluid py-4">
-     <div class="col-12 mb-4">
-    <h3 class="fw-bold d-block mb-0">Welcome, {{ $firstName }}!</h3>
-      <small class="text-muted d-block">
-       Today <span style="color: #065754;">{{ now()->format('M d') }}</span>
-    </small>
+    <div class="col-12 mb-4">
+        <h3 class="fw-bold d-block mb-0">Welcome, {{ $firstName }}!</h3>
+        <small class="text-muted d-block">
+            Today <span style="color: #065754;">{{ now()->format('M d') }}</span>
+        </small>
     </div>
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">Vendor Dashboard</h2>
+        <h2 class="fw-bold">Creator Dashboard</h2>
     </div>
-    <!-- Performance Metrics -->
+
+    <!-- New Overall Stats Cards -->
     <div class="row g-3 mb-4">
-        <!-- Number of Sales -->
+        <div class="col-md-3 col-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-0">All Products</h6>
+                    <h3 class="fw-bold">{{ number_format($totalProducts) }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-0">All Sales</h6>
+                    <h3 class="fw-bold">{{ number_format($totalSales) }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-0">All Customers</h6>
+                    <h3 class="fw-bold">{{ number_format($totalCustomers) }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-0">All Affiliates</h6>
+                    <h3 class="fw-bold">{{ number_format($totalAffiliates) }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Performing Product Highlight -->
+    @if($topPerformingProduct)
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-bold">🏆 Top Performing Product</h5>
+        </div>
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-2 col-4">
+                    @if($topPerformingProduct->image)
+                        <img src="{{ asset('storage/' . $topPerformingProduct->image) }}"
+                             alt="{{ $topPerformingProduct->name }}"
+                             class="img-fluid rounded" style="max-height: 120px; object-fit: cover;">
+                    @else
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 120px;">
+                            <i class="fas fa-image fa-3x text-muted"></i>
+                        </div>
+                    @endif
+                </div>
+                <div class="col-md-10 col-8">
+                    <h4 class="fw-bold">{{ $topPerformingProduct->name }}</h4>
+                    <div class="d-flex gap-4">
+                        <div>
+                            <small class="text-muted">Units Sold</small>
+                            <h5 class="mb-0">{{ number_format($topPerformingProduct->units_sold) }}</h5>
+                        </div>
+                        <div>
+                            <small class="text-muted">Revenue</small>
+                            <h5 class="mb-0">{{ $symbols[$userCurrency] }}{{ number_format($topPerformingProduct->revenue, 2) }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Performance Metrics (original cards) -->
+    <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
@@ -37,7 +111,6 @@
                 </div>
             </div>
         </div>
-        <!-- Total Volume (converted to user's currency) -->
         <div class="col-md-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
@@ -50,7 +123,6 @@
                 </div>
             </div>
         </div>
-        <!-- Total Withdrawal -->
         <div class="col-md-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
@@ -63,12 +135,11 @@
                 </div>
             </div>
         </div>
-        <!-- Total Vendor Earnings -->
         <div class="col-md-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="text-muted mb-0">Total Vendor Earnings</h6>
+                        <h6 class="text-muted mb-0">Total Creator Earnings</h6>
                         <span class="badge bg-success">{{ $earningsChange }}</span>
                     </div>
                     <h3 class="fw-bold">{{ $symbols[$userCurrency] }}{{ number_format($totalEarningsUserCurrency, 2) }}</h3>
@@ -76,12 +147,11 @@
                 </div>
             </div>
         </div>
-        <!-- Today's Vendor Earnings -->
         <div class="col-md-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="text-muted mb-0">Today's Vendor Earnings</h6>
+                        <h6 class="text-muted mb-0">Today's Creator Earnings</h6>
                         <span class="badge bg-success">{{ $todayEarningsChange }}</span>
                     </div>
                     <h3 class="fw-bold">{{ $symbols[$userCurrency] }}{{ number_format($todayEarningsUserCurrency, 2) }}</h3>
@@ -89,7 +159,6 @@
                 </div>
             </div>
         </div>
-        <!-- Total Sales (same as Number of Sales, but can be different if you want) -->
         <div class="col-md-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
@@ -104,49 +173,48 @@
         </div>
     </div>
 
-<!-- Top Performing Products -->
-<div class="card border-0 shadow-sm mb-4">
-    <div class="card-header bg-white py-3">
-        <h5 class="mb-0 fw-bold">Top Performing Products</h5>
-    </div>
-    <div class="card-body">
-        <div class="row g-3">
-            @forelse($topProducts as $index => $product)
-            <div class="col-lg-2-4 col-md-4 col-6">
-                <div class="border rounded p-3 h-100">
-                    <!-- Product Image -->
-                    <div class="product-image-wrapper mb-2" style="height: 120px; overflow: hidden; border-radius: 0.5rem;">
-                        @if($product->image)
-                            <img src="{{ asset('storage/' . $product->image) }}" 
-                                 alt="{{ $product->name }}" 
-                                 class="w-100 h-100" 
-                                 style="object-fit: cover;">
-                        @else
-                            <div class="bg-light d-flex align-items-center justify-content-center h-100 text-muted">
-                                <i class="fas fa-image fa-2x"></i>
-                            </div>
-                        @endif
+    <!-- Top Performing Products List (Top 5) -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-bold">Top Performing Products</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                @forelse($topProducts as $index => $product)
+                <div class="col-lg-2-4 col-md-4 col-6">
+                    <div class="border rounded p-3 h-100">
+                        <div class="product-image-wrapper mb-2" style="height: 120px; overflow: hidden; border-radius: 0.5rem;">
+                            @if($product->image)
+                                <img src="{{ asset('storage/' . $product->image) }}" 
+                                     alt="{{ $product->name }}" 
+                                     class="w-100 h-100" 
+                                     style="object-fit: cover;">
+                            @else
+                                <div class="bg-light d-flex align-items-center justify-content-center h-100 text-muted">
+                                    <i class="fas fa-image fa-2x"></i>
+                                </div>
+                            @endif
+                        </div>
+                        
+                        <span class="badge {{ $index == 0 ? 'bg-warning text-dark' : 'bg-secondary text-white' }} mb-2">
+                            #{{ $index + 1 }} @if($index == 0) 🔥 Popular @endif
+                        </span>
+                        <h6 class="fw-bold text-truncate">{{ $product->name }}</h6>
+                        <div class="d-flex justify-content-between mt-2">
+                            <small>Units Sold: <strong>{{ number_format($product->units_sold) }}</strong></small>
+                            <small>Revenue: <strong>{{ $symbols[$userCurrency] }}{{ number_format($product->revenue, 2) }}</strong></small>
+                        </div>
+                        <small class="text-success"><i class="fas fa-arrow-up me-1"></i>Trending Up</small>
                     </div>
-                    
-                    <span class="badge {{ $index == 0 ? 'bg-warning text-dark' : 'bg-secondary text-white' }} mb-2">
-                        #{{ $index + 1 }} @if($index == 0) 🔥 Popular @endif
-                    </span>
-                    <h6 class="fw-bold text-truncate">{{ $product->name }}</h6>
-                    <div class="d-flex justify-content-between mt-2">
-                        <small>Units Sold: <strong>{{ number_format($product->units_sold) }}</strong></small>
-                        <small>Revenue: <strong>{{ $symbols[$userCurrency] }}{{ number_format($product->revenue, 2) }}</strong></small>
-                    </div>
-                    <small class="text-success"><i class="fas fa-arrow-up me-1"></i>Trending Up</small>
                 </div>
+                @empty
+                <div class="col-12 text-center py-4">
+                    <p class="text-muted">No products sold yet.</p>
+                </div>
+                @endforelse
             </div>
-            @empty
-            <div class="col-12 text-center py-4">
-                <p class="text-muted">No products sold yet.</p>
-            </div>
-            @endforelse
         </div>
     </div>
-</div>
 
     <!-- Recent Sales Table -->
     <div class="card border-0 shadow-sm">
@@ -183,9 +251,6 @@
                         <td>{{ $sale->commission_formatted }}</td>
                     </tr>
                     @empty
-                    <tr>
-                        <td colspan="9" class="text-center">No recent sales</td>
-                    </tr>
                     @endforelse
                 </tbody>
             </table>

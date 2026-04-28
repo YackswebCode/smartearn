@@ -11,22 +11,17 @@ use Illuminate\Support\Facades\Storage;
 
 class VendorProductController extends Controller
 {
-    /**
-     * Display a listing of the vendor's products.
-     */
     public function index()
     {
         $vendor = Auth::user();
+
         $products = Product::where('vendor_id', $vendor->id)
-                    ->orderBy('created_at', 'desc')
-                    ->paginate(10);
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         return view('vendor.products.index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new product.
-     */
     public function create()
     {
         return view('vendor.products.form', [
@@ -37,9 +32,6 @@ class VendorProductController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created product.
-     */
     public function store(Request $request)
     {
         $vendor = Auth::user();
@@ -55,49 +47,44 @@ class VendorProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Handle image upload
+        // Upload image
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
-            $validated['image'] = $path;
+            $validated['image'] = $request->file('image')->store('products', 'public');
         }
 
-        // Generate slug from name (ensure uniqueness)
+        // Generate slug
         $validated['slug'] = Str::slug($validated['name']) . '-' . uniqid();
 
-        // Set vendor_id
         $validated['vendor_id'] = $vendor->id;
-
-        // Default rating
         $validated['rating'] = 0;
 
-        Product::create($validated);
+        // 🔥 NEW: store creator link
+        $validated['creator_link'] = url('/p/' . $validated['slug'] . '?ref=creator_' . $vendor->id);
+
+        $product = Product::create($validated);
 
         return redirect()->route('vendor.products.index')
             ->with('success', 'Product created successfully.');
     }
 
-    /**
-     * Show the form for editing the specified product.
-     */
     public function edit($id)
     {
         $vendor = Auth::user();
+
         $product = Product::where('vendor_id', $vendor->id)->findOrFail($id);
 
         return view('vendor.products.form', [
             'product' => $product,
             'formAction' => route('vendor.products.update', $product),
-            'formMethod' => 'POST', // We'll use method spoofing for PUT
+            'formMethod' => 'POST',
             'buttonText' => 'Update Product'
         ]);
     }
 
-    /**
-     * Update the specified product.
-     */
     public function update(Request $request, $id)
     {
         $vendor = Auth::user();
+
         $product = Product::where('vendor_id', $vendor->id)->findOrFail($id);
 
         $validated = $request->validate([
@@ -111,19 +98,18 @@ class VendorProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Handle image upload: delete old if new uploaded
         if ($request->hasFile('image')) {
-            // Delete old image
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }
-            $path = $request->file('image')->store('products', 'public');
-            $validated['image'] = $path;
+
+            $validated['image'] = $request->file('image')->store('products', 'public');
         }
 
-        // Update slug only if name changed (optional)
+        // If name changes → regenerate slug + creator link
         if ($product->name !== $validated['name']) {
             $validated['slug'] = Str::slug($validated['name']) . '-' . uniqid();
+            $validated['creator_link'] = url('/p/' . $validated['slug'] . '?ref=creator_' . $vendor->id);
         }
 
         $product->update($validated);
@@ -132,15 +118,12 @@ class VendorProductController extends Controller
             ->with('success', 'Product updated successfully.');
     }
 
-    /**
-     * Remove the specified product.
-     */
     public function destroy($id)
     {
         $vendor = Auth::user();
+
         $product = Product::where('vendor_id', $vendor->id)->findOrFail($id);
 
-        // Delete associated image if exists
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
         }

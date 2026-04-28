@@ -158,23 +158,37 @@ class AffiliateController extends Controller
         ]);
     }
 
-    public function marketplace()
-    {
-        $user = Auth::user();
-        $userCurrency = $user->currency;
-        $toNGN = $this->toNGN;
-        $symbols = $this->symbols;
+  public function marketplace(Request $request)
+{
+    $user = Auth::user();
+    $userCurrency = $user->currency;
+    $toNGN = $this->toNGN;
+    $symbols = $this->symbols;
 
-        $isSubscribed = $user->marketplace_subscribed && $user->subscription_expires_at && $user->subscription_expires_at->isFuture();
-
-        if (!$isSubscribed) {
-            return view('affiliate.marketplace-subscribe', compact('user', 'userCurrency', 'toNGN', 'symbols'));
-        }
-
-        $products = Product::paginate(8);
-        return view('affiliate.marketplace', compact('products', 'userCurrency', 'toNGN', 'symbols'));
+    // Check subscription
+    $isSubscribed = $user->marketplace_subscribed && $user->subscription_expires_at && $user->subscription_expires_at->isFuture();
+    if (!$isSubscribed) {
+        return view('affiliate.marketplace-subscribe', compact('user', 'userCurrency', 'toNGN', 'symbols'));
     }
 
+    // Build filtered query
+    $query = Product::query();
+
+    if ($request->filled('search')) {
+        $query->where('name', 'like', '%' . $request->search . '%');
+    }
+    if ($request->filled('type')) {
+        $query->where('type', $request->type);
+    }
+    if ($request->filled('category')) {
+        $query->where('category', $request->category);
+    }
+
+    // Paginate and keep filter parameters
+    $products = $query->paginate(8)->appends($request->all());
+
+    return view('affiliate.marketplace', compact('products', 'userCurrency', 'toNGN', 'symbols'));
+}
     public function subscribe(Request $request)
     {
         $user = Auth::user();

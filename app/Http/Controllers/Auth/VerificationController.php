@@ -70,8 +70,9 @@ class VerificationController extends Controller
 
         Session::forget('verification_email');
 
-        // Redirect to payment page instead of login
-        return redirect()->route('subscription.payment')->with('email', $user->email);
+        // Redirect to login page with a success message
+        return redirect()->route('login')
+            ->with('success', 'Email verified successfully. You can now log in.');
     }
 
     public function resend()

@@ -11,7 +11,10 @@ class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    protected $redirectTo = '/affiliate/dashboard';
+    /**
+     * Default redirect (fallback only)
+     */
+    protected $redirectTo = '/';
 
     public function __construct()
     {
@@ -24,35 +27,43 @@ class LoginController extends Controller
     }
 
     /**
-     * The user has been authenticated.
-     * Check email verification and activation payment.
+     * After login logic
      */
     protected function authenticated(Request $request, $user)
     {
-        // First check if email is verified
+        // 🔒 Ensure email is verified
         if (!$user->hasVerifiedEmail()) {
             auth()->logout();
+
             return redirect()->route('verification.notice')
-                ->withErrors(['email' => 'You need to verify your email address. A code has been sent to your email.']);
+                ->withErrors([
+                    'email' => 'You need to verify your email address. A code has been sent to your email.'
+                ]);
         }
 
-        // Then check if activation fee is paid
-        if (!$user->activation_paid) {
-            auth()->logout();
-            // Store email in session for payment page
-            session(['email' => $user->email]);
-            return redirect()->route('subscription.payment')
-                ->withErrors(['payment' => 'You need to pay the activation fee before accessing your account.']);
+        // 🎯 Redirect based on account type
+        if ($user->account_type === 'ecommerce') {
+            return redirect()->route('affiliate.dashboard');
         }
 
-        // All checks passed – proceed to dashboard
-        return redirect()->intended($this->redirectTo);
+        if ($user->account_type === 'edtech') {
+            return redirect()->route('vendor.dashboard');
+        }
+
+        // ⚠️ Fallback (in case account_type is null or invalid)
+        return redirect('/');
     }
 
+    /**
+     * Logout
+     */
     public function logout(Request $request)
     {
         $this->guard()->logout();
+
         $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return redirect('/');
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'About SmartEarn – Our Mission & Team')
+@section('title', 'About SmartEarn – Monetize Your Knowledge, Learn What Pays')
 
 @section('content')
 
@@ -18,20 +18,20 @@
     <div class="container position-relative" style="z-index: 2;">
         <div class="row justify-content-center text-center">
             <div class="col-lg-10">
-                <span class="section-tag">🚀 Who we are</span>
+                <span class="section-tag">📘 Next-Gen Skills-to-Income Platform</span>
                 <h1 class="display-3 fw-bold mb-4 text-white">
-                    Building Africa’s leading<br>hybrid marketplace
+                    Bridging the gap between<br>learning and earning
                 </h1>
                 <p class="lead text-white-50 mx-auto" style="max-width: 800px;">
-                    SmartEarn was founded to bridge the gap between affiliates and vendors – 
-                    creating a transparent, multi‑currency ecosystem where both sides win.
+                    SmartEarn empowers creators to turn knowledge into income and provides a gateway 
+                    for aspiring builders to learn real-world, income-driven skills.
                 </p>
             </div>
         </div>
     </div>
 </section>
 
-{{-- ===== OUR STORY / MISSION – light green background, white cards ===== --}}
+{{-- ===== PROBLEM & SOLUTION – light green background, white cards ===== --}}
 <section class="py-5 section-green-light">
     <div class="container">
         <div class="row align-items-center g-5">
@@ -49,30 +49,34 @@
                 </div>
             </div>
             <div class="col-lg-6">
-                <span class="section-tag" style="background: var(--primary-green); color: white;">Our story</span>
-                <h2 class="display-6 fw-bold mb-4" style="color: var(--primary-green);">From a bold idea to a thriving ecosystem</h2>
+                <span class="section-tag" style="background: var(--primary-green); color: white;">The Problem we saw</span>
+                <h2 class="display-6 fw-bold mb-3" style="color: var(--primary-green);">Talent without a structured platform</h2>
                 <p class="text-muted fs-5 mb-4">
-                    In 2021, we noticed a gap: affiliates in Africa had limited access to high‑commission programs, 
-                    while vendors struggled to find trustworthy promoters. We built SmartEarn to solve both problems.
+                    Many talented Africans have valuable skills but lack structured platforms to monetize them. 
+                    Traditional education often teaches theory, not real-world, income-generating skills. 
+                    Millions of young Africans want to earn online but don’t know what skills to learn or where to start.
                 </p>
+                <span class="section-tag mt-3" style="background: var(--primary-green); color: white;">The solution we’re bringing</span>
+                <h2 class="display-6 fw-bold mb-3 mt-3" style="color: var(--primary-green);">Learning tied directly to earning opportunities</h2>
                 <p class="text-muted mb-4">
-                    Today, we power over 10,000 affiliates and 2,500 vendors across Nigeria, Ghana, Kenya, and beyond – 
-                    processing millions in commissions every month. Our mission remains simple: democratise earnings through technology.
+                    We give creators a platform to turn their valuable skills, knowledge and solutions into a profitable business. 
+                    We provide learners with accessible, practical, and results-driven education, creating a system where 
+                    learning is directly tied to earning opportunities.
                 </p>
                 <div class="d-flex gap-3">
                     <div>
-                        <h3 class="fw-bold mb-0" style="color: var(--primary-green);">4+</h3>
-                        <span class="text-muted">Years of trust</span>
+                        <h3 class="fw-bold mb-0" style="color: var(--primary-green);">5+</h3>
+                        <span class="text-muted">Countries</span>
                     </div>
                     <div class="vr bg-secondary"></div>
                     <div>
-                        <h3 class="fw-bold mb-0" style="color: var(--primary-green);">₦120M+</h3>
-                        <span class="text-muted">Commissions paid</span>
+                        <h3 class="fw-bold mb-0" style="color: var(--primary-green);">5000+</h3>
+                        <span class="text-muted">Active Users</span>
                     </div>
                     <div class="vr bg-secondary"></div>
                     <div>
-                        <h3 class="fw-bold mb-0" style="color: var(--primary-green);">4</h3>
-                        <span class="text-muted">Currencies</span>
+                        <h3 class="fw-bold mb-0" style="color: var(--primary-green);">$100K+</h3>
+                        <span class="text-muted">Paid to Partners</span>
                     </div>
                 </div>
             </div>
@@ -80,33 +84,33 @@
     </div>
 </section>
 
-{{-- ===== VALUES / CORE PRINCIPLES – extra light green, green cards ===== --}}
+{{-- ===== WHAT DRIVES US – extra light green, green cards ===== --}}
 <section class="py-5 section-green-extra-light">
     <div class="container">
         <div class="row justify-content-center text-center mb-5">
             <div class="col-lg-8">
-                <span class="section-tag" style="background: var(--primary-green); color: white;">Our values</span>
-                <h2 class="display-6 fw-bold mb-3" style="color: var(--primary-green);">What drives us every day</h2>
-                <p class="text-muted fs-5">We built SmartEarn on four foundational pillars.</p>
+                <span class="section-tag" style="background: var(--primary-green); color: white;">What drives us</span>
+                <h2 class="display-6 fw-bold mb-3" style="color: var(--primary-green);">The pillars behind every decision</h2>
+                <p class="text-muted fs-5">Our commitment is built on four core principles.</p>
             </div>
         </div>
         <div class="row g-4">
             <div class="col-md-6 col-lg-3">
                 <div class="feature-card h-100 text-center">
                     <div class="feature-icon mx-auto">
-                        <i class="bi bi-shield-check"></i>
+                        <i class="bi bi-graph-up-arrow"></i>
                     </div>
-                    <h4 class="fw-bold mb-3">Transparency</h4>
-                    <p class="text-muted">Every click, sale, and commission is trackable in real time – no hidden fees.</p>
+                    <h4 class="fw-bold mb-3">Bridging income & education gaps</h4>
+                    <p class="text-muted">Getting paid for what you know and learning what only matters – closing the divide between skills and income.</p>
                 </div>
             </div>
             <div class="col-md-6 col-lg-3">
                 <div class="feature-card h-100 text-center">
                     <div class="feature-icon mx-auto">
-                        <i class="bi bi-people-fill"></i>
+                        <i class="bi bi-diagram-3-fill"></i>
                     </div>
-                    <h4 class="fw-bold mb-3">Community first</h4>
-                    <p class="text-muted">We grow when our affiliates and vendors grow. Your success is our success.</p>
+                    <h4 class="fw-bold mb-3">Structure</h4>
+                    <p class="text-muted">Helping every creator make money while pushing out solutions and running the whole process as a real business.</p>
                 </div>
             </div>
             <div class="col-md-6 col-lg-3">
@@ -115,7 +119,7 @@
                         <i class="bi bi-globe"></i>
                     </div>
                     <h4 class="fw-bold mb-3">Pan‑African</h4>
-                    <p class="text-muted">Built for Africa, with multi‑currency support and local payment partners.</p>
+                    <p class="text-muted">Built for Africa, with multi-currency support and local payment partners.</p>
                 </div>
             </div>
             <div class="col-md-6 col-lg-3">
@@ -124,7 +128,7 @@
                         <i class="bi bi-lightbulb-fill"></i>
                     </div>
                     <h4 class="fw-bold mb-3">Innovation</h4>
-                    <p class="text-muted">We constantly improve our platform – from instant payouts to advanced analytics.</p>
+                    <p class="text-muted">SmartEarn is constantly improved to ensure that users get the best experience.</p>
                 </div>
             </div>
         </div>
@@ -137,8 +141,8 @@
         <div class="row justify-content-center text-center mb-5">
             <div class="col-lg-8">
                 <span class="section-tag" style="background: rgba(255,255,255,0.2); color: white;">Our journey</span>
-                <h2 class="display-6 fw-bold mb-3 text-white">Key milestones</h2>
-                <p class="text-white-50 fs-5">From launch to pan‑African expansion.</p>
+                <h2 class="display-6 fw-bold mb-3 text-white">From idea to ecosystem</h2>
+                <p class="text-white-50 fs-5">Key milestones that shaped SmartEarn.</p>
             </div>
         </div>
         <div class="row">
@@ -147,36 +151,36 @@
                     <div class="timeline-item">
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
-                            <h4 class="fw-bold text-white">2021 – Launched in Lagos</h4>
-                            <p class="text-white-50">Started with 50 beta affiliates and 10 vendors.</p>
+                            <h4 class="fw-bold text-white">2021 – Problem Identified</h4>
+                            <p class="text-white-50">Recognised the massive gap between learning and earning across Africa.</p>
                         </div>
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
-                            <h4 class="fw-bold text-white">2022 – ₦10M paid</h4>
-                            <p class="text-white-50">Reached first major commission milestone, expanded to Ghana.</p>
+                            <h4 class="fw-bold text-white">2022 – Platform Launch</h4>
+                            <p class="text-white-50">Launched the SmartEarn marketplace for creators to sell digital products.</p>
                         </div>
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
-                            <h4 class="fw-bold text-white">2023 – Multi‑currency launch</h4>
-                            <p class="text-white-50">Added USD, GHS, KES support; integrated Flutterwave & Paystack.</p>
+                            <h4 class="fw-bold text-white">2023 – Multi‑currency Expansion</h4>
+                            <p class="text-white-50">Added support for multiple currencies and expanded to Ghana and Kenya.</p>
                         </div>
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
-                            <h4 class="fw-bold text-white">2024 – 10,000 affiliates</h4>
-                            <p class="text-white-50">Hit 10k active affiliates, opened Nairobi office.</p>
+                            <h4 class="fw-bold text-white">2024 – EdTech Integration</h4>
+                            <p class="text-white-50">Launched SmartEarn Digital University to teach income‑driven skills.</p>
                         </div>
                     </div>
                     <div class="timeline-item">
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
-                            <h4 class="fw-bold text-white">2025 – Vendor marketplace</h4>
-                            <p class="text-white-50">Launched self‑service vendor dashboard and automated payouts.</p>
+                            <h4 class="fw-bold text-white">2025 – Pan‑African Growth</h4>
+                            <p class="text-white-50">5,000+ active users, $100K+ paid to partners, operations in 5 countries.</p>
                         </div>
                     </div>
                 </div>
@@ -192,7 +196,7 @@
             <div class="col-lg-8">
                 <span class="section-tag" style="background: var(--primary-green); color: white;">Leadership</span>
                 <h2 class="display-6 fw-bold mb-3" style="color: var(--primary-green);">Meet the minds behind SmartEarn</h2>
-                <p class="text-muted fs-5">A team passionate about empowering African creators and businesses.</p>
+                <p class="text-muted fs-5">A team passionate about empowering African creators and learners.</p>
             </div>
         </div>
         <div class="row g-4">
@@ -249,7 +253,7 @@
                     </div>
                     <h4 class="fw-bold mb-1">Fatima Suleiman</h4>
                     <p class="text-muted small mb-0">Head of Partnerships</p>
-                    <p class="text-muted small">Affiliate & vendor growth</p>
+                    <p class="text-muted small">Affiliate & creator growth</p>
                 </div>
             </div>
         </div>
@@ -263,8 +267,8 @@
         <div class="cta-banner">
             <div class="row justify-content-center align-items-center">
                 <div class="col-lg-8 text-center text-lg-start">
-                    <h3 class="fw-bold mb-2 text-white" style="font-size: 2rem;">Be part of our story</h3>
-                    <p class="mb-4 text-white opacity-90 fs-5">Join thousands of affiliates and vendors already growing with SmartEarn.</p>
+                    <h3 class="fw-bold mb-2 text-white" style="font-size: 2rem;">Monetize your knowledge, learn what pays</h3>
+                    <p class="mb-4 text-white opacity-90 fs-5">Join creators and learners already growing with SmartEarn.</p>
                 </div>
                 <div class="col-lg-4 text-center text-lg-end">
                     <a href="{{ route('register') }}" class="btn btn-light btn-lg px-5 py-3 fw-bold" style="border-radius: 50px;">

@@ -29,11 +29,14 @@
         <!-- Sidebar -->
         <div class="bg-green text-white" id="sidebar-wrapper" style="min-width: 250px; background-color: #065754;">
             <div class="sidebar-heading text-center py-4">
-                <img src="{{ asset('images/logo.png') }}" alt="SmartEarn" height="40">
+                <img src="{{ asset('images/logo.png') }}" 
+                     alt="SmartEarn" height="40"
+                     onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='inline-block';">
+                <span class="text-white fw-bold" style="display:none; font-size:1.5rem;">SmartEarn</span>
             </div>
             <div class="px-3 mb-3">
                 <button class="btn btn-light-green w-100" style="background-color: #4CAF50; border: none; color: white;">
-                    <i class="fas fa-store me-2"></i>Vendor
+                    <i class="fas fa-store me-2"></i>Creator
                 </button>
             </div>
 
@@ -47,17 +50,26 @@
                 <a href="{{ route('vendor.orders') }}" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('vendor.orders') ? 'active' : '' }}">
                     <i class="fas fa-shopping-cart me-3"></i>Order & Sales
                 </a>
-                <!-- My Product -->
+
+                 <!-- My Product -->
                 <a href="{{ route('vendor.products.index') }}" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('vendor.products.*') ? 'active' : '' }}">
                     <i class="fas fa-box me-3"></i>My Product
                 </a>
+                                <!-- My Product -->
+                <a href="" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('vendor.products.*') ? 'active' : '' }}">
+                    <i class="fas fa-users me-3"></i>My affiliates 
+                </a>
                 <!-- Top Vendor -->
                 <a href="{{ route('vendor.top_vendor') }}" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('vendor.top_vendor') ? 'active' : '' }}">
-                    <i class="fas fa-crown me-3"></i>Top Vendor
+                    <i class="fas fa-crown me-3"></i>Creator Leaderboard 
                 </a>
                  <a href="{{ route('affiliate.edit_profile') }}" class="list-group-item list-group-item-action bg-transparent text-white">
                     <i class="fas fa-user-edit me-3"></i>Edit Profile
                 </a>
+                <a href="{{ route('vendor.withdrawals') }}" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('vendor.withdrawals') ? 'active' : '' }}">
+                    <i class="fas fa-money-bill-wave me-3"></i>Withdraw Funds
+                </a>
+
                 <hr class="my-2">
 
                 <!-- Group 2 -->
@@ -67,12 +79,7 @@
                 <a href="{{ route('affiliate.business_university') }}" class="list-group-item list-group-item-action bg-transparent text-white">
                     <i class="fas fa-graduation-cap me-3"></i>Business University
                 </a>
-                <hr class="my-2">
-
-                <!-- Group 3 -->
-                <a href="{{ route('vendor.withdrawals') }}" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('vendor.withdrawals') ? 'active' : '' }}">
-                    <i class="fas fa-money-bill-wave me-3"></i>Withdraw Funds
-                </a>
+            
                 <hr class="my-2">
 
                 <!-- Logout -->

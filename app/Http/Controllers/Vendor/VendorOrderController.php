@@ -26,69 +26,83 @@ class VendorOrderController extends Controller
         'KES' => 'KES',
     ];
 
+    protected function convertAmount(float $amount, string $fromCurrency, string $toCurrency): float
+    {
+        $fromRate = $this->toNGN[$fromCurrency] ?? 1;
+        $toRate = $this->toNGN[$toCurrency] ?? 1;
+
+        return $amount * ($fromRate / $toRate);
+    }
+
     public function index(Request $request)
     {
         $user = Auth::user();
-        $userCurrency = $user->currency;
-        $toNGN = $this->toNGN;
+        $userCurrency = $this->symbols[$user->currency ?? 'NGN'] ? ($user->currency ?? 'NGN') : 'NGN';
+
+        if (!array_key_exists($userCurrency, $this->toNGN)) {
+            $userCurrency = 'NGN';
+        }
+
         $symbols = $this->symbols;
 
-        // Get all product IDs owned by this vendor
+        // All product IDs owned by this vendor
         $productIds = Product::where('vendor_id', $user->id)->pluck('id');
 
-        // Build orders query (only completed orders)
-        $ordersQuery = Order::whereIn('product_id', $productIds)
-                            ->where('status', 'completed')
-                            ->with('product', 'affiliate');
+        // Completed orders only
+        $orders = Order::whereIn('product_id', $productIds)
+            ->where('status', 'completed')
+            ->with(['product', 'affiliate'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        // Optional: apply filters from request (e.g., date range, product)
-        // For now, just get all orders
-
-        $orders = $ordersQuery->orderBy('created_at', 'desc')->get();
-
-        // ----- Metrics -----
+        // Overall metrics
         $salesCount = $orders->count();
 
-        // Volume per currency
         $volumeNGN = $orders->where('currency', 'NGN')->sum('amount');
         $volumeUSD = $orders->where('currency', 'USD')->sum('amount');
         $volumeGHS = $orders->where('currency', 'GHS')->sum('amount');
         $volumeXAF = $orders->where('currency', 'XAF')->sum('amount');
         $volumeKES = $orders->where('currency', 'KES')->sum('amount');
 
-        // Total volume in user's currency
-        $totalVolumeUserCurrency = $orders->sum(function ($order) use ($toNGN, $userCurrency) {
-            return $order->amount * ($toNGN[$order->currency] / $toNGN[$userCurrency]);
+        $totalVolumeUserCurrency = $orders->sum(function ($order) use ($userCurrency) {
+            return $this->convertAmount((float) $order->amount, $order->currency ?? 'NGN', $userCurrency);
         });
 
-        // Total earnings (vendor_earnings) in user's currency
-        $totalEarningsUserCurrency = $orders->sum(function ($order) use ($toNGN, $userCurrency) {
-            return $order->vendor_earnings * ($toNGN[$order->currency] / $toNGN[$userCurrency]);
+        $totalEarningsUserCurrency = $orders->sum(function ($order) use ($userCurrency) {
+            return $this->convertAmount((float) $order->affiliate_commission, $order->currency ?? 'NGN', $userCurrency);
         });
 
-        // Total withdrawn (from user's vendor_balance, assumed NGN)
         $totalWithdrawn = $user->vendor_balance ?? 0;
-        $totalWithdrawnUserCurrency = $totalWithdrawn / $toNGN[$userCurrency];
+        $totalWithdrawnUserCurrency = $this->convertAmount((float) $totalWithdrawn, 'NGN', $userCurrency);
 
-        // Prepare orders list for display (with formatted values)
-        $ordersList = $orders->map(function ($order) use ($toNGN, $userCurrency, $symbols) {
+        // Recent transactions only (client asked for recent transactions)
+        $ordersList = $orders->take(10)->map(function ($order) use ($userCurrency, $symbols) {
             $affiliate = $order->affiliate;
-            return (object)[
-                'product_type' => $order->product->type ?? 'N/A',
-                'customer_name' => $order->buyer_name,
-                'customer_email' => $order->buyer_email,
-                'reference' => $order->reference,
-                'date' => $order->created_at,
-                'amount' => $order->amount * ($toNGN[$order->currency] / $toNGN[$userCurrency]),
-                'amount_formatted' => $symbols[$userCurrency] . number_format($order->amount * ($toNGN[$order->currency] / $toNGN[$userCurrency]), 2),
+            $product = $order->product;
+
+            $convertedAmount = $this->convertAmount((float) $order->amount, $order->currency ?? 'NGN', $userCurrency);
+            $convertedCommission = $this->convertAmount((float) $order->affiliate_commission, $order->currency ?? 'NGN', $userCurrency);
+
+            return (object) [
+                'id' => $order->id,
+                'product_name' => $product->name ?? 'N/A',
+                'product_type' => $product->type ?? 'N/A',
+                'customer_name' => $order->buyer_name ?? 'N/A',
+                'customer_email' => $order->buyer_email ?? 'N/A',
+                'reference' => $order->reference ?? 'N/A',
+                'date' => optional($order->created_at)->format('Y-m-d H:i'),
+                'currency' => $order->currency ?? 'NGN',
+                'amount' => $convertedAmount,
+                'amount_formatted' => ($symbols[$userCurrency] ?? '') . number_format($convertedAmount, 2),
                 'affiliate_name' => $affiliate->name ?? 'N/A',
                 'affiliate_email' => $affiliate->email ?? 'N/A',
-                'commission' => $order->affiliate_commission * ($toNGN[$order->currency] / $toNGN[$userCurrency]),
-                'commission_formatted' => $symbols[$userCurrency] . number_format($order->affiliate_commission * ($toNGN[$order->currency] / $toNGN[$userCurrency]), 2),
+                'commission' => $convertedCommission,
+                'commission_formatted' => ($symbols[$userCurrency] ?? '') . number_format($convertedCommission, 2),
+                'status' => $order->status ?? 'completed',
             ];
         });
 
-        // Placeholder percentage changes (can be replaced with real calculations later)
+        // Placeholder percentage changes
         $salesChange = '+12.5%';
         $volumeChange = '+8.2%';
         $withdrawalChange = '+5.4%';
@@ -96,25 +110,25 @@ class VendorOrderController extends Controller
         $todayEarningsChange = '+22.3%';
         $totalSalesChange = '+9.7%';
 
-       return view('vendor.orders', compact(
-        'userCurrency',
-        'symbols',
-        'salesCount',
-        'volumeNGN',          // <-- add
-        'volumeUSD',          // <-- add
-        'volumeGHS',          // <-- add
-        'volumeXAF',          // <-- add
-        'volumeKES',          // <-- add
-        'totalVolumeUserCurrency',
-        'totalWithdrawnUserCurrency',
-        'totalEarningsUserCurrency',
-        'ordersList',
-        'salesChange',
-        'volumeChange',
-        'withdrawalChange',
-        'earningsChange',
-        'todayEarningsChange',
-        'totalSalesChange'
-    ));
+        return view('vendor.orders', compact(
+            'userCurrency',
+            'symbols',
+            'salesCount',
+            'totalVolumeUserCurrency',
+            'totalWithdrawnUserCurrency',
+            'totalEarningsUserCurrency',
+            'ordersList',
+            'salesChange',
+            'volumeChange',
+            'withdrawalChange',
+            'earningsChange',
+            'todayEarningsChange',
+            'totalSalesChange',
+            'volumeNGN',
+            'volumeUSD',
+            'volumeGHS',
+            'volumeXAF',
+            'volumeKES'
+        ));
     }
 }

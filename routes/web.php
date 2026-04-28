@@ -144,10 +144,15 @@ Route::view('/privacy', 'privacy')->name('privacy');
 
 /*
 |--------------------------------------------------------------------------
-| Public Affiliate Product Page
+| Public Product Pages (UPDATED 🔥)
 |--------------------------------------------------------------------------
 */
 
+// Creator link (main public product page)
+Route::get('/p/{slug}', [PublicProductController::class, 'show'])
+    ->name('product.public');
+
+// Affiliate link
 Route::get('/aff/{affiliateId}/{productSlug}', [PublicProductController::class, 'show'])
     ->name('affiliate.product.public');
 
@@ -176,8 +181,6 @@ Route::prefix('affiliate')
     ->middleware(['auth', 'verified'])
     ->group(function () {
 
-        /* Dashboard */
-
         Route::controller(AffiliateController::class)->group(function () {
             Route::get('/', 'dashboard')->name('index');
             Route::get('/dashboard', 'dashboard')->name('dashboard');
@@ -189,30 +192,35 @@ Route::prefix('affiliate')
             Route::post('/marketplace/subscribe', 'subscribe')->name('marketplace.subscribe');
         });
 
-        /* Wallet */
-
         Route::get('/wallet', [WalletController::class, 'index'])->name('wallet');
-
-        /* Withdrawals */
 
         Route::controller(WithdrawalController::class)->group(function () {
             Route::get('/withdrawals', 'index')->name('withdrawals');
             Route::post('/withdrawals', 'store')->name('withdrawals.store');
         });
 
-        /* Add Funds */
-
         Route::controller(AddFundsController::class)->group(function () {
             Route::get('/add-funds', 'index')->name('add_funds');
             Route::post('/add-funds/verify', 'verify')->name('add_funds.verify');
         });
 
-        /* Top Affiliate */
-
         Route::get('/top-affiliate', [TopAffiliateController::class, 'index'])
             ->name('top_affiliate');
 
-        /* Profile */
+
+        Route::get('/challenges', [App\Http\Controllers\Affiliate\AffiliateChallengeController::class, 'index'])
+        ->name('challenges');
+
+        Route::get('/digital-university', function () {
+            return view('affiliate.digital_university');
+        })->name('digital_university');
+
+           Route::get('/withdrawals', [WithdrawalController::class, 'index'])->name('withdrawals');
+        Route::post('/withdrawals', [WithdrawalController::class, 'store'])->name('withdrawals.store');
+
+        // 👇 Add these two new routes for PIN management
+        Route::get('/set-pin', [WithdrawalController::class, 'setPinForm'])->name('set_pin');
+        Route::post('/set-pin', [WithdrawalController::class, 'storePin'])->name('store_pin');
 
         Route::controller(AffiliateProfileController::class)->group(function () {
             Route::get('/profile/edit', 'edit')->name('edit_profile');
@@ -222,16 +230,12 @@ Route::prefix('affiliate')
         Route::post('/profile/become-vendor', [AffiliateController::class, 'becomeVendor'])
             ->name('become_vendor');
 
-        /* Skill Garage */
-
         Route::controller(SkillGarageController::class)->group(function () {
             Route::get('/skill-garage', 'index')->name('skill_garage');
             Route::get('/skill-garage/faculty/{id}', 'showFaculty')->name('skill_garage.faculty');
             Route::get('/skill-garage/track/{id}', 'showTrack')->name('skill_garage.track');
             Route::post('/skill-garage/track/{id}/enroll', 'enroll')->name('skill_garage.enroll');
         });
-
-        /* Business University */
 
         Route::controller(BusinessUniversityController::class)->group(function () {
             Route::get('/business-university', 'index')->name('business_university');
@@ -240,8 +244,6 @@ Route::prefix('affiliate')
             Route::get('/business-university/my-learning', 'myLearning')->name('business.my_learning');
             Route::get('/business-university/learning/{id}', 'learningCourse')->name('business.learning.course');
         });
-
-        /* My Learning */
 
         Route::controller(MyLearningController::class)->group(function () {
             Route::get('/my-learning', 'index')->name('my_learning');
@@ -283,66 +285,40 @@ Route::prefix('vendor')
 
 Route::prefix('admin')->name('admin.')->group(function () {
 
-    /* Admin Authentication */
-
     Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AdminLoginController::class, 'login']);
     Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
 
-    /*
-    |--------------------------------------------------------------------------
-    | Protected Admin Routes
-    |--------------------------------------------------------------------------
-    */
-
     Route::middleware('auth:admin')->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-        /* Users */
 
         Route::resource('users', AdminUserController::class)->except(['create','store']);
 
         Route::post('/users/{user}/ban', [AdminUserController::class, 'ban'])
             ->name('users.ban');
 
-        /* Vendors */
-
         Route::get('/vendors', [AdminVendorController::class, 'index'])->name('vendors.index');
         Route::get('/vendors/{vendor}', [AdminVendorController::class, 'show'])->name('vendors.show');
         Route::post('/vendors/{vendor}/approve', [AdminVendorController::class, 'approve'])->name('vendors.approve');
         Route::post('/vendors/{vendor}/reject', [AdminVendorController::class, 'reject'])->name('vendors.reject');
 
-        /* Products */
-
         Route::resource('products', AdminProductController::class)->except(['show']);
-
-        /* Orders */
 
         Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
 
-        /* Finance */
-
         Route::get('/transactions', [AdminTransactionController::class, 'index'])->name('transactions.index');
         Route::get('/commissions', [AdminCommissionController::class, 'index'])->name('commissions.index');
-
-        /* Withdrawals */
 
         Route::get('/withdrawals', [AdminWithdrawalController::class, 'index'])->name('withdrawals.index');
         Route::get('/withdrawals/{withdrawal}', [AdminWithdrawalController::class, 'show'])->name('withdrawals.show');
         Route::post('/withdrawals/{withdrawal}/approve', [AdminWithdrawalController::class, 'approve'])->name('withdrawals.approve');
         Route::post('/withdrawals/{withdrawal}/reject', [AdminWithdrawalController::class, 'reject'])->name('withdrawals.reject');
 
-        /* Admin Profile */
-
         Route::get('/profile', [AdminProfileController::class, 'edit'])->name('profile.edit');
         Route::post('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
 
-        /* Admin Management */
-
         Route::resource('admins', AdminManagementController::class)->except(['show']);
-
-        /* Skill Garage */
 
         Route::resource('faculties', FacultyController::class);
         Route::resource('tracks', TrackController::class);
@@ -350,8 +326,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('enrollments', [EnrollmentController::class, 'index'])
             ->name('enrollments.index');
-
-        /* Business University */
 
         Route::resource('business-faculties', BusinessFacultyController::class)
             ->parameters(['business-faculties' => 'businessFaculty']);

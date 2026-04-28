@@ -29,6 +29,7 @@ class User extends Authenticatable
         'reset_code',                  // optional but good
         'reset_code_expires_at',        // optional
         'is_banned',
+        'account_type',
     ];
 
     protected $casts = [
