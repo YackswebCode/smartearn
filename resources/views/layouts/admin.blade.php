@@ -1,3 +1,4 @@
+{{-- resources/views/layouts/admin.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +12,8 @@
     <!-- DataTables Bootstrap 5 CSS -->
     <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
-    <!-- Admin custom CSS (optional, reuse affiliate.css for now) -->
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
+    <!-- Admin custom CSS (reuse affiliate.css for now) -->
     <link rel="stylesheet" href="{{ asset('css/affiliate.css') }}">
     @stack('styles')
 </head>
@@ -57,48 +59,32 @@
                 </a>
                 <hr class="my-2">
 
-                <!-- Skill Garage Dropdown -->
+                {{-- Digital University (replaces Skill Garage & Business University) --}}
                 <div class="list-group-item bg-transparent text-white p-0 border-0">
-                    <a href="#skillGarageMenu" class="list-group-item list-group-item-action bg-transparent text-white d-flex align-items-center" data-bs-toggle="collapse" aria-expanded="{{ request()->routeIs('admin.faculties.*') || request()->routeIs('admin.tracks.*') || request()->routeIs('admin.lectures.*') || request()->routeIs('admin.enrollments.*') ? 'true' : 'false' }}">
-                        <i class="fas fa-layer-group me-3"></i>Skill Garage
+                    <a href="#digitalUniversityMenu"
+                       class="list-group-item list-group-item-action bg-transparent text-white d-flex align-items-center"
+                       data-bs-toggle="collapse"
+                       aria-expanded="{{ request()->routeIs('admin.faculties.*') || request()->routeIs('admin.tracks.*') || request()->routeIs('admin.lectures.*') || request()->routeIs('admin.enrollments.*') ? 'true' : 'false' }}">
+                        <i class="fas fa-university me-3"></i>Digital University
                         <i class="fas fa-chevron-down ms-auto"></i>
                     </a>
-                    <div class="collapse {{ request()->routeIs('admin.faculties.*') || request()->routeIs('admin.tracks.*') || request()->routeIs('admin.lectures.*') || request()->routeIs('admin.enrollments.*') ? 'show' : '' }}" id="skillGarageMenu">
+                    <div class="collapse {{ request()->routeIs('admin.faculties.*') || request()->routeIs('admin.tracks.*') || request()->routeIs('admin.lectures.*') || request()->routeIs('admin.enrollments.*') ? 'show' : '' }}"
+                         id="digitalUniversityMenu">
                         <div class="list-group list-group-flush ps-4">
-                            <a href="{{ route('admin.faculties.index') }}" class="list-group-item list-group-item-action bg-transparent text-white small {{ request()->routeIs('admin.faculties.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.faculties.index') }}"
+                               class="list-group-item list-group-item-action bg-transparent text-white small {{ request()->routeIs('admin.faculties.*') ? 'active' : '' }}">
                                 <i class="fas fa-circle fa-2xs me-2" style="font-size: 0.5rem; vertical-align: middle;"></i>Faculties
                             </a>
-                            <a href="{{ route('admin.tracks.index') }}" class="list-group-item list-group-item-action bg-transparent text-white small {{ request()->routeIs('admin.tracks.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.tracks.index') }}"
+                               class="list-group-item list-group-item-action bg-transparent text-white small {{ request()->routeIs('admin.tracks.*') ? 'active' : '' }}">
                                 <i class="fas fa-circle fa-2xs me-2" style="font-size: 0.5rem; vertical-align: middle;"></i>Tracks
                             </a>
-                            <a href="{{ route('admin.lectures.index') }}" class="list-group-item list-group-item-action bg-transparent text-white small {{ request()->routeIs('admin.lectures.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.lectures.index') }}"
+                               class="list-group-item list-group-item-action bg-transparent text-white small {{ request()->routeIs('admin.lectures.*') ? 'active' : '' }}">
                                 <i class="fas fa-circle fa-2xs me-2" style="font-size: 0.5rem; vertical-align: middle;"></i>Lectures
                             </a>
-                            <a href="{{ route('admin.enrollments.index') }}" class="list-group-item list-group-item-action bg-transparent text-white small {{ request()->routeIs('admin.enrollments.*') ? 'active' : '' }}">
-                                <i class="fas fa-circle fa-2xs me-2" style="font-size: 0.5rem; vertical-align: middle;"></i>Enrollments
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Business University Dropdown -->
-                <div class="list-group-item bg-transparent text-white p-0 border-0">
-                    <a href="#businessUniversityMenu" class="list-group-item list-group-item-action bg-transparent text-white d-flex align-items-center" data-bs-toggle="collapse" aria-expanded="{{ request()->routeIs('admin.business-faculties.*') || request()->routeIs('admin.business-courses.*') || request()->routeIs('admin.business-lectures.*') || request()->routeIs('admin.business-enrollments.*') ? 'true' : 'false' }}">
-                        <i class="fas fa-university me-3"></i>Business University
-                        <i class="fas fa-chevron-down ms-auto"></i>
-                    </a>
-                    <div class="collapse {{ request()->routeIs('admin.business-faculties.*') || request()->routeIs('admin.business-courses.*') || request()->routeIs('admin.business-lectures.*') || request()->routeIs('admin.business-enrollments.*') ? 'show' : '' }}" id="businessUniversityMenu">
-                        <div class="list-group list-group-flush ps-4">
-                            <a href="{{ route('admin.business-faculties.index') }}" class="list-group-item list-group-item-action bg-transparent text-white small {{ request()->routeIs('admin.business-faculties.*') ? 'active' : '' }}">
-                                <i class="fas fa-circle fa-2xs me-2" style="font-size: 0.5rem; vertical-align: middle;"></i>Faculties
-                            </a>
-                            <a href="{{ route('admin.business-courses.index') }}" class="list-group-item list-group-item-action bg-transparent text-white small {{ request()->routeIs('admin.business-courses.*') ? 'active' : '' }}">
-                                <i class="fas fa-circle fa-2xs me-2" style="font-size: 0.5rem; vertical-align: middle;"></i>Courses
-                            </a>
-                            <a href="{{ route('admin.business-lectures.index') }}" class="list-group-item list-group-item-action bg-transparent text-white small {{ request()->routeIs('admin.business-lectures.*') ? 'active' : '' }}">
-                                <i class="fas fa-circle fa-2xs me-2" style="font-size: 0.5rem; vertical-align: middle;"></i>Lectures
-                            </a>
-                            <a href="{{ route('admin.business-enrollments.index') }}" class="list-group-item list-group-item-action bg-transparent text-white small {{ request()->routeIs('admin.business-enrollments.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.enrollments.index') }}"
+                               class="list-group-item list-group-item-action bg-transparent text-white small {{ request()->routeIs('admin.enrollments.*') ? 'active' : '' }}">
                                 <i class="fas fa-circle fa-2xs me-2" style="font-size: 0.5rem; vertical-align: middle;"></i>Enrollments
                             </a>
                         </div>

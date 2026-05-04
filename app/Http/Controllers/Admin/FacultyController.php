@@ -1,71 +1,58 @@
 <?php
-// app/Http/Controllers/Admin/FacultyController.php
 
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Faculty;
+use App\Models\DigitalFaculty;
 use Illuminate\Http\Request;
 
 class FacultyController extends Controller
 {
     public function index()
     {
-        $faculties = Faculty::orderBy('order')->get();
-        return view('admin.skill-garage.faculties.index', compact('faculties'));
+        $faculties = DigitalFaculty::orderBy('order')->get();
+        return view('admin.faculties.index', compact('faculties'));
     }
 
     public function create()
     {
-        return view('admin.skill-garage.faculties.form', [
-            'faculty' => new Faculty(),
-            'formAction' => route('admin.faculties.store'),
-            'formMethod' => 'POST',
-            'buttonText' => 'Create Faculty'
-        ]);
+        return view('admin.faculties.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'icon' => 'nullable|string|max:255',
-            'order' => 'integer'
+            'name'      => 'required|string|max:255',
+            'icon'      => 'nullable|string|max:255',
+            'order'     => 'nullable|integer',
+            'is_active' => 'boolean',
         ]);
-        Faculty::create($data);
+
+        DigitalFaculty::create($data);
         return redirect()->route('admin.faculties.index')->with('success', 'Faculty created.');
     }
 
-    public function edit(Faculty $faculty)
+    public function edit(DigitalFaculty $faculty)
     {
-        return view('admin.skill-garage.faculties.form', [
-            'faculty' => $faculty,
-            'formAction' => route('admin.faculties.update', $faculty),
-            'formMethod' => 'POST',
-            'buttonText' => 'Update Faculty'
-        ]);
+        return view('admin.faculties.edit', compact('faculty'));
     }
 
-    public function update(Request $request, Faculty $faculty)
+    public function update(Request $request, DigitalFaculty $faculty)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'icon' => 'nullable|string|max:255',
-            'order' => 'integer'
+            'name'      => 'required|string|max:255',
+            'icon'      => 'nullable|string|max:255',
+            'order'     => 'nullable|integer',
+            'is_active' => 'boolean',
         ]);
+
         $faculty->update($data);
         return redirect()->route('admin.faculties.index')->with('success', 'Faculty updated.');
     }
 
-    public function destroy(Faculty $faculty)
+    public function destroy(DigitalFaculty $faculty)
     {
-        // Check if any tracks belong to this faculty
-        if ($faculty->tracks()->count() > 0) {
-            return back()->withErrors(['Cannot delete faculty with existing tracks.']);
-        }
         $faculty->delete();
-        return redirect()->route('admin.faculties.index')->with('success', 'Faculty deleted.');
+        return back()->with('success', 'Faculty deleted.');
     }
 }

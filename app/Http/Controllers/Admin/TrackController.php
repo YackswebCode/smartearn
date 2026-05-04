@@ -1,117 +1,105 @@
 <?php
-// app/Http/Controllers/Admin/TrackController.php
 
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Faculty;
-use App\Models\Track;
+use App\Models\DigitalFaculty;
+use App\Models\DigitalTrack;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class TrackController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = Track::with('faculty');
-        if ($request->has('faculty_id')) {
-            $query->where('faculty_id', $request->faculty_id);
-        }
-        $tracks = $query->orderBy('order')->get();
-        $faculties = Faculty::orderBy('name')->get();
-        return view('admin.skill-garage.tracks.index', compact('tracks', 'faculties'));
+        $tracks = DigitalTrack::with('faculty')
+            ->orderBy('faculty_id')
+            ->orderBy('order')
+            ->get();
+
+        return view('admin.tracks.index', compact('tracks'));
     }
 
     public function create()
     {
-        $faculties = Faculty::orderBy('name')->get();
-        return view('admin.skill-garage.tracks.form', [
-            'track' => new Track(),
-            'faculties' => $faculties,
-            'formAction' => route('admin.tracks.store'),
-            'formMethod' => 'POST',
-            'buttonText' => 'Create Track'
-        ]);
+        $faculties = DigitalFaculty::orderBy('name')->get();
+        return view('admin.tracks.create', compact('faculties'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'faculty_id' => 'required|exists:faculties,id',
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'detailed_explanation' => 'nullable|string',
-            'price_monthly' => 'nullable|numeric|min:0',
-            'price_quarterly' => 'nullable|numeric|min:0',
-            'price_yearly' => 'nullable|numeric|min:0',
-            'currency' => 'required|in:NGN,USD,GHS,XAF,KES',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'duration_months' => 'nullable|integer|min:1',
-            'is_diploma' => 'boolean',
-            'order' => 'integer'
+            'faculty_id'      => 'required|exists:digital_faculties,id',
+            'title'           => 'required|string|max:255',
+            'description'     => 'nullable|string',
+            'instructors'     => 'nullable|string|max:255',
+            'image'           => 'nullable|image|max:2048',
+            'rating'          => 'nullable|numeric|min:0|max:5',
+            'reviews_count'   => 'nullable|integer|min:0',
+            'duration_months' => 'required|integer|min:1',
+            'price'           => 'nullable|numeric|min:0',
+            'monthly_price'   => 'nullable|numeric|min:0',
+            'quarterly_price' => 'nullable|numeric|min:0',
+            'one_time_price'  => 'nullable|numeric|min:0',
+            'currency'        => 'required|string|max:10',
+            'order'           => 'nullable|integer',
+            'is_active'       => 'boolean',
         ]);
+
+        $data['slug'] = Str::slug($data['title']);
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('tracks', 'public');
         }
 
-        Track::create($data);
+        DigitalTrack::create($data);
+
         return redirect()->route('admin.tracks.index')->with('success', 'Track created.');
     }
 
-    public function edit(Track $track)
+    public function edit(DigitalTrack $track)
     {
-        $faculties = Faculty::orderBy('name')->get();
-        return view('admin.skill-garage.tracks.form', [
-            'track' => $track,
-            'faculties' => $faculties,
-            'formAction' => route('admin.tracks.update', $track),
-            'formMethod' => 'POST',
-            'buttonText' => 'Update Track'
-        ]);
+        $faculties = DigitalFaculty::orderBy('name')->get();
+        return view('admin.tracks.edit', compact('track', 'faculties'));
     }
 
-    public function update(Request $request, Track $track)
+    public function update(Request $request, DigitalTrack $track)
     {
         $data = $request->validate([
-            'faculty_id' => 'required|exists:faculties,id',
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'detailed_explanation' => 'nullable|string',
-            'price_monthly' => 'nullable|numeric|min:0',
-            'price_quarterly' => 'nullable|numeric|min:0',
-            'price_yearly' => 'nullable|numeric|min:0',
-            'currency' => 'required|in:NGN,USD,GHS,XAF,KES',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'duration_months' => 'nullable|integer|min:1',
-            'is_diploma' => 'boolean',
-            'order' => 'integer'
+            'faculty_id'      => 'required|exists:digital_faculties,id',
+            'title'           => 'required|string|max:255',
+            'description'     => 'nullable|string',
+            'instructors'     => 'nullable|string|max:255',
+            'image'           => 'nullable|image|max:2048',
+            'rating'          => 'nullable|numeric|min:0|max:5',
+            'reviews_count'   => 'nullable|integer|min:0',
+            'duration_months' => 'required|integer|min:1',
+            'price'           => 'nullable|numeric|min:0',
+            'monthly_price'   => 'nullable|numeric|min:0',
+            'quarterly_price' => 'nullable|numeric|min:0',
+            'one_time_price'  => 'nullable|numeric|min:0',
+            'currency'        => 'required|string|max:10',
+            'order'           => 'nullable|integer',
+            'is_active'       => 'boolean',
         ]);
+
+        $data['slug'] = Str::slug($data['title']);
 
         if ($request->hasFile('image')) {
             if ($track->image) {
-                Storage::disk('public')->delete($track->image);
+                \Storage::disk('public')->delete($track->image);
             }
             $data['image'] = $request->file('image')->store('tracks', 'public');
         }
 
         $track->update($data);
+
         return redirect()->route('admin.tracks.index')->with('success', 'Track updated.');
     }
 
-    public function destroy(Track $track)
+    public function destroy(DigitalTrack $track)
     {
-        // Check if any lectures exist
-        if ($track->lectures()->count() > 0) {
-            return back()->withErrors(['Cannot delete track with existing lectures.']);
-        }
-        if ($track->enrollments()->count() > 0) {
-            return back()->withErrors(['Cannot delete track with enrollments.']);
-        }
-        if ($track->image) {
-            Storage::disk('public')->delete($track->image);
-        }
         $track->delete();
-        return redirect()->route('admin.tracks.index')->with('success', 'Track deleted.');
+        return back()->with('success', 'Track deleted.');
     }
 }

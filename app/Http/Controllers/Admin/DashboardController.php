@@ -8,14 +8,10 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\Withdrawal;
-use App\Models\Faculty;
-use App\Models\Track;
-use App\Models\Lecture;
-use App\Models\Enrollment;
-use App\Models\BusinessFaculty;
-use App\Models\BusinessCourse;
-use App\Models\BusinessLecture;
-use App\Models\BusinessEnrollment;
+use App\Models\DigitalFaculty;
+use App\Models\DigitalTrack;
+use App\Models\DigitalLecture;
+use App\Models\DigitalEnrollment;
 use App\Models\Commission;
 use Illuminate\Support\Facades\DB;
 
@@ -39,10 +35,10 @@ class DashboardController extends Controller
         $totalOrders = Order::count();
         $pendingWithdrawals = Withdrawal::where('status', 'pending')->count();
 
-        // Process completed orders for revenue and sales volume
+        // Revenue from completed orders
         $completedOrders = Order::where('status', 'completed')->get();
         $totalRevenueNGN = 0;
-        $salesVolume = []; // per currency original amounts
+        $salesVolume = [];
 
         foreach ($completedOrders as $order) {
             $rate = $this->toNGN[$order->currency] ?? 1;
@@ -50,7 +46,7 @@ class DashboardController extends Controller
             $salesVolume[$order->currency] = ($salesVolume[$order->currency] ?? 0) + $order->amount;
         }
 
-        // Process commissions
+        // Commission totals
         $affiliateCommissionNGN = 0;
         $vendorCommissionNGN = 0;
         $commissions = Commission::all();
@@ -65,17 +61,11 @@ class DashboardController extends Controller
             }
         }
 
-        // Skill Garage stats
-        $totalFaculties = Faculty::count();
-        $totalTracks = Track::count();
-        $totalLectures = Lecture::count();
-        $totalEnrollments = Enrollment::count();
-
-        // Business University stats
-        $totalBusinessFaculties = BusinessFaculty::count();
-        $totalBusinessCourses = BusinessCourse::count();
-        $totalBusinessLectures = BusinessLecture::count();
-        $totalBusinessEnrollments = BusinessEnrollment::count();
+        // ---- NEW: Digital University stats ----
+        $totalDigitalFaculties   = DigitalFaculty::count();
+        $totalDigitalTracks      = DigitalTrack::count();
+        $totalDigitalLectures    = DigitalLecture::count();
+        $totalDigitalEnrollments = DigitalEnrollment::count();
 
         // Recent orders and users
         $recentOrders = Order::with('product', 'affiliate', 'vendor')
@@ -98,14 +88,11 @@ class DashboardController extends Controller
             'salesVolume',
             'affiliateCommissionNGN',
             'vendorCommissionNGN',
-            'totalFaculties',
-            'totalTracks',
-            'totalLectures',
-            'totalEnrollments',
-            'totalBusinessFaculties',
-            'totalBusinessCourses',
-            'totalBusinessLectures',
-            'totalBusinessEnrollments',
+            // Digital university variables (replacing old Skill Garage & Business University)
+            'totalDigitalFaculties',
+            'totalDigitalTracks',
+            'totalDigitalLectures',
+            'totalDigitalEnrollments',
             'recentOrders',
             'recentUsers'
         ));

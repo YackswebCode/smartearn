@@ -1,3 +1,4 @@
+{{-- resources/views/admin/dashboard/index.blade.php --}}
 @extends('layouts.admin')
 
 @section('title', 'Dashboard')
@@ -135,72 +136,37 @@
         @endforeach
     </div>
 
-    <!-- Row 3: Skill Garage & Business University -->
+    <!-- Row 3: Digital University (replaces Skill Garage & Business University) -->
     <div class="row g-3 mb-4">
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm h-100">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white py-3">
-                    <h5 class="mb-0 fw-bold">Skill Garage</h5>
+                    <h5 class="mb-0 fw-bold">Digital University</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row g-2">
-                        <div class="col-6">
+                    <div class="row g-3">
+                        <div class="col-md-3 col-6">
                             <div class="p-3 bg-light rounded-3 text-center">
                                 <h6 class="text-muted mb-1">Faculties</h6>
-                                <h3 class="fw-bold mb-0">{{ number_format($totalFaculties) }}</h3>
+                                <h3 class="fw-bold mb-0">{{ number_format($totalDigitalFaculties) }}</h3>
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-md-3 col-6">
                             <div class="p-3 bg-light rounded-3 text-center">
                                 <h6 class="text-muted mb-1">Tracks</h6>
-                                <h3 class="fw-bold mb-0">{{ number_format($totalTracks) }}</h3>
+                                <h3 class="fw-bold mb-0">{{ number_format($totalDigitalTracks) }}</h3>
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-md-3 col-6">
                             <div class="p-3 bg-light rounded-3 text-center">
                                 <h6 class="text-muted mb-1">Lectures</h6>
-                                <h3 class="fw-bold mb-0">{{ number_format($totalLectures) }}</h3>
+                                <h3 class="fw-bold mb-0">{{ number_format($totalDigitalLectures) }}</h3>
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-md-3 col-6">
                             <div class="p-3 bg-light rounded-3 text-center">
                                 <h6 class="text-muted mb-1">Enrollments</h6>
-                                <h3 class="fw-bold mb-0">{{ number_format($totalEnrollments) }}</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white py-3">
-                    <h5 class="mb-0 fw-bold">Business University</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <div class="p-3 bg-light rounded-3 text-center">
-                                <h6 class="text-muted mb-1">Faculties</h6>
-                                <h3 class="fw-bold mb-0">{{ number_format($totalBusinessFaculties) }}</h3>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="p-3 bg-light rounded-3 text-center">
-                                <h6 class="text-muted mb-1">Courses</h6>
-                                <h3 class="fw-bold mb-0">{{ number_format($totalBusinessCourses) }}</h3>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="p-3 bg-light rounded-3 text-center">
-                                <h6 class="text-muted mb-1">Lectures</h6>
-                                <h3 class="fw-bold mb-0">{{ number_format($totalBusinessLectures) }}</h3>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="p-3 bg-light rounded-3 text-center">
-                                <h6 class="text-muted mb-1">Enrollments</h6>
-                                <h3 class="fw-bold mb-0">{{ number_format($totalBusinessEnrollments) }}</h3>
+                                <h3 class="fw-bold mb-0">{{ number_format($totalDigitalEnrollments) }}</h3>
                             </div>
                         </div>
                     </div>
@@ -209,11 +175,11 @@
         </div>
     </div>
 
-    <!-- Row 4: Recent Orders Table (unchanged) -->
+    <!-- Row 4: Recent Orders Table -->
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
             <h5 class="mb-0 fw-bold">Recent Orders</h5>
-            <a href="#" class="btn btn-sm btn-outline-success">View All</a>
+            <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-outline-success">View All</a>
         </div>
         <div class="card-body p-0">
             <table class="table table-hover align-middle mb-0">
@@ -247,11 +213,11 @@
         </div>
     </div>
 
-    <!-- Row 5: Recent Users Table (unchanged) -->
+    <!-- Row 5: Recent Users Table -->
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
             <h5 class="mb-0 fw-bold">Recent Users</h5>
-            <a href="#" class="btn btn-sm btn-outline-success">View All</a>
+            <a href="{{ route('admin.users.index') }}" class="btn btn-sm btn-outline-success">View All</a>
         </div>
         <div class="card-body p-0">
             <table class="table table-hover align-middle mb-0">
