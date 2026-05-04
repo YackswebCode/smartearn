@@ -20,25 +20,32 @@ class AffiliateProfileController extends Controller
         $user = Auth::user();
 
         $request->validate([
-            'currency' => 'required|in:NGN,USD,GHS,XAF,KES',
-            'business_name' => 'nullable|string|max:255',
-            'about_me' => 'nullable|string',
-            'business_description' => 'nullable|string',
-            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_image'        => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'currency'             => 'required|in:NGN,USD,GHS,XAF,KES',
+            'business_name'        => 'nullable|string|max:255',
+            'about_me'             => 'nullable|string|max:1000',
+            'business_description' => 'nullable|string|max:2000',
         ]);
 
-        $data = $request->only(['currency', 'business_name', 'about_me', 'business_description']);
-
+        // Handle profile image upload
         if ($request->hasFile('profile_image')) {
+            // Delete old image if exists
             if ($user->profile_image) {
                 Storage::disk('public')->delete($user->profile_image);
             }
-            $path = $request->file('profile_image')->store('profile-images', 'public');
-            $data['profile_image'] = $path;
+
+            $path = $request->file('profile_image')->store('profile_images', 'public');
+            $user->profile_image = $path;
         }
 
-        $user->update($data);
+        // Update other fields
+        $user->currency             = $request->currency;
+        $user->business_name        = $request->business_name ?? $user->name;
+        $user->about_me             = $request->about_me;
+        $user->business_description = $request->business_description;
+        $user->save();
 
-        return redirect()->route('affiliate.edit_profile')->with('success', 'Profile updated successfully.');
+        return redirect()->route('affiliate.edit_profile')
+            ->with('success', 'Profile updated successfully.');
     }
 }

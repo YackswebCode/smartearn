@@ -18,7 +18,7 @@
     <div class="container position-relative" style="z-index: 2;">
         <div class="row justify-content-center text-center">
             <div class="col-lg-10">
-                <span class="section-tag">📘 Next-Gen Skills-to-Income Platform</span>
+                <span class="section-tag">Next-Gen Skills-to-Income Platform</span>
                 <h1 class="display-3 fw-bold mb-4 text-white">
                     Bridging the gap between<br>learning and earning
                 </h1>
@@ -37,7 +37,7 @@
         <div class="row align-items-center g-5">
             <div class="col-lg-6">
                 <div class="position-relative">
-                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" 
+                    <img src="{{ asset('images/hero.png') }}" 
                          alt="SmartEarn team collaborating" 
                          class="img-fluid rounded-4 shadow-lg" 
                          style="border: 4px solid rgba(6,87,84,0.2);">
@@ -189,7 +189,7 @@
     </div>
 </section>
 
-{{-- ===== TEAM – light green background, white cards ===== --}}
+<!-- {{-- ===== TEAM – light green background, white cards ===== --}}
 <section class="py-5 section-green-light">
     <div class="container">
         <div class="row justify-content-center text-center mb-5">
@@ -258,7 +258,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> -->
 
 
 {{-- ===== CTA – gradient banner on extra light green ===== --}}

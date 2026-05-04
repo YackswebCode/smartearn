@@ -17,7 +17,7 @@
     <div class="container position-relative" style="z-index: 2;">
         <div class="row justify-content-center text-center">
             <div class="col-lg-10">
-                <span class="section-tag">❓ Got questions?</span>
+                <span class="section-tag">Got questions?</span>
                 <h1 class="display-3 fw-bold mb-4 text-white">
                     We’ve got answers
                 </h1>

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <!-- Custom SmartEarn CSS -->
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
     @stack('styles')
@@ -34,12 +35,7 @@
         <nav class="navbar navbar-expand-lg sticky-top" style="background: rgba(6,87,84,0.95); backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(6,87,84,0.15);">
             <div class="container">
                <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ url('/') }}">
-                    <span class="brand-icon d-flex align-items-center justify-content-center" 
-                        style="background-color: white; color: var(--primary-green); width: 40px; height: 40px; border-radius: 10px; margin-right: 10px; font-size: 1.25rem; font-weight: 800; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
-                        <img src="{{ asset('images/logo.png') }}" alt="SmartEarn" height="40"
-                            onerror="this.style.display='none'; this.parentNode.innerHTML='<span style=\'color: var(--primary-green); font-size: 1.25rem; font-weight: 800;\'>SE</span>';">
-                    </span>
-                    <span class="text-white" style="font-size: 1.5rem; letter-spacing: -0.5px;">SmartEarn</span>
+                    <img src="{{ asset('images/logo.png') }}" alt="SmartEarn"  height="40">
                 </a>
 <button class="navbar-toggler border-0"
         type="button"
@@ -135,11 +131,7 @@
             <!-- Brand column -->
             <div class="col-lg-4 mb-4 mb-lg-0">
                 <div class="d-flex align-items-center mb-3">
-                    <span class="d-flex align-items-center justify-content-center" 
-                          style="width: 48px; height: 48px; background-color: rgba(255,255,255,0.1); border-radius: 12px; margin-right: 12px;">
-                        <span style="color: white; font-size: 1.5rem; font-weight: 700;">SE</span>
-                    </span>
-                    <h4 class="text-white fw-bold mb-0" style="letter-spacing: -0.5px;">SmartEarn</h4>
+                   <img src="{{ asset('images/logo.png') }}" alt="SmartEarn"  height="40">
                 </div>
                 <p class="text-white-50 small" style="line-height: 1.7;">
                     The hybrid platform where affiliates and vendors thrive. 

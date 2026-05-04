@@ -14,7 +14,7 @@ class LoginController extends Controller
     /**
      * Default redirect (fallback only)
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/login';
 
     public function __construct()
     {
@@ -43,7 +43,7 @@ class LoginController extends Controller
 
         // 🎯 Redirect based on account type
         if ($user->account_type === 'ecommerce') {
-            return redirect()->route('affiliate.dashboard');
+            return redirect()->route('customer.dashboard');
         }
 
         if ($user->account_type === 'edtech') {
@@ -51,7 +51,7 @@ class LoginController extends Controller
         }
 
         // ⚠️ Fallback (in case account_type is null or invalid)
-        return redirect('/');
+        return redirect('/login');
     }
 
     /**
@@ -64,6 +64,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login');
     }
 }

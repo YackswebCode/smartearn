@@ -18,7 +18,7 @@
     <div class="container position-relative" style="z-index: 2;">
         <div class="row align-items-center">
             <div class="col-lg-6 hero-content">
-                <span class="section-tag">📘 Monetize Your Expertise, Learn What Pays</span>
+                <span class="section-tag">Monetize Your Expertise, Learn What Pays</span>
                 <h1 class="display-large fw-bold mb-4">
                     1 Platform. 2 Paths.
                 </h1>
@@ -32,11 +32,6 @@
                 </div>
                 <div class="d-flex align-items-center gap-4">
                     <div class="d-flex align-items-center">
-                        <div class="d-flex me-2">
-                            <img src="https://randomuser.me/api/portraits/women/11.jpg" class="rounded-circle border-2 border-white" width="32" height="32" style="margin-right: -8px;">
-                            <img src="https://randomuser.me/api/portraits/men/21.jpg" class="rounded-circle border-2 border-white" width="32" height="32" style="margin-right: -8px;">
-                            <img src="https://randomuser.me/api/portraits/women/33.jpg" class="rounded-circle border-2 border-white" width="32" height="32">
-                        </div>
                         <span class="text-white fw-semibold">5+ Countries</span>
                     </div>
                     <div class="vr bg-white" style="width: 2px; opacity: 0.3;"></div>
@@ -48,7 +43,7 @@
             </div>
             <div class="col-lg-6 mt-5 mt-lg-0 position-relative">
                 <div class="hero-image-wrapper text-center">
-                    <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-4.0.3&auto=format&fit=crop&w=1074&q=80" 
+                    <img src="{{ asset('images/hero.png') }}" 
                          alt="SmartEarn platform dashboard" class="img-fluid rounded-4 shadow-lg" style="max-height: 500px; width: 100%; object-fit: cover; border: 4px solid rgba(255,255,255,0.2);">
                     
                     {{-- Floating stat cards – now with glass effect --}}
@@ -216,72 +211,6 @@
                     <div class="ms-4">
                         <h3 class="fw-bold mb-1" style="color: var(--primary-green);">$100K+</h3>
                         <p class="text-muted mb-0">Paid to partners</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-{{-- ===== TESTIMONIALS – extra light green, white cards ===== --}}
-<section class="py-5 section-green-extra-light">
-    <div class="container">
-        <div class="row justify-content-center text-center mb-5">
-            <div class="col-lg-8">
-                <span class="section-tag" style="background: var(--primary-green); color: white;">Testimonials</span>
-                <h2 class="display-6 fw-bold mb-3" style="color: var(--primary-green);">SmartEarners say we’re good at what we do</h2>
-                <p class="text-muted fs-5">Hear from our community.</p>
-            </div>
-        </div>
-        <div class="row g-4">
-            <div class="col-lg-4">
-                <div class="testimonial-card">
-                    <div class="d-flex align-items-center mb-4">
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" class="testimonial-avatar me-3" alt="Sarah">
-                        <div>
-                            <h5 class="fw-bold mb-0">Sarah Johnson</h5>
-                            <small class="text-muted">Affiliate, Nigeria</small>
-                        </div>
-                    </div>
-                    <div class="testimonial-quote mb-3">
-                        “I’ve tried many affiliate programs, but SmartEarn’s commission rates and instant payouts are unmatched. I made ₦150k in my first month!”
-                    </div>
-                    <div class="text-warning">
-                        ⭐⭐⭐⭐⭐
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="testimonial-card">
-                    <div class="d-flex align-items-center mb-4">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="testimonial-avatar me-3" alt="Michael">
-                        <div>
-                            <h5 class="fw-bold mb-0">Michael Osei</h5>
-                            <small class="text-muted">Vendor, Ghana</small>
-                        </div>
-                    </div>
-                    <div class="testimonial-quote mb-3">
-                        “Listing my digital products was easy. The platform fee is fair, and I love seeing my net earnings in real time. Highly recommended!”
-                    </div>
-                    <div class="text-warning">
-                        ⭐⭐⭐⭐⭐
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="testimonial-card">
-                    <div class="d-flex align-items-center mb-4">
-                        <img src="https://randomuser.me/api/portraits/women/68.jpg" class="testimonial-avatar me-3" alt="Aisha">
-                        <div>
-                            <h5 class="fw-bold mb-0">Aisha Bello</h5>
-                            <small class="text-muted">Affiliate, Kenya</small>
-                        </div>
-                    </div>
-                    <div class="testimonial-quote mb-3">
-                        “The multi-currency support is a game changer. I earn in KES, and the conversion is seamless. SmartEarn is truly international ready.”
-                    </div>
-                    <div class="text-warning">
-                        ⭐⭐⭐⭐⭐
                     </div>
                 </div>
             </div>

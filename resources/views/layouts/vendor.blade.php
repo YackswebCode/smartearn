@@ -12,6 +12,7 @@
     <!-- DataTables Bootstrap 5 CSS -->
     <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
+     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <!-- Vendor Dashboard CSS (optional, reuse affiliate.css or create vendor.css) -->
     <link rel="stylesheet" href="{{ asset('css/affiliate.css') }}">
     @stack('styles')
@@ -72,12 +73,9 @@
 
                 <hr class="my-2">
 
-                <!-- Group 2 -->
-                <a href="{{ route('affiliate.skill_garage') }}" class="list-group-item list-group-item-action bg-transparent text-white">
-                    <i class="fas fa-laptop-code me-3"></i>Skill Garage
-                </a>
-                <a href="{{ route('affiliate.business_university') }}" class="list-group-item list-group-item-action bg-transparent text-white">
-                    <i class="fas fa-graduation-cap me-3"></i>Business University
+                 <!-- Group 2 -->
+                <a href="{{ route('affiliate.digital_university') }}" class="list-group-item list-group-item-action bg-transparent text-white {{ request()->routeIs('affiliate.digital_university') ? 'active' : '' }}">
+                    <i class="fas fa-university me-3"></i>Digital University
                 </a>
             
                 <hr class="my-2">
@@ -123,11 +121,16 @@
                                 </li>
                                 @if(Auth::user() && Auth::user()->vendor_status === 'Active')
                                     <li>
-                                        <a class="dropdown-item" href="{{ route('vendor.dashboard') }}">
-                                            <i class="fas fa-store me-2"></i>Vendor Dashboard
+                                        <a class="dropdown-item active" href="{{ route('vendor.dashboard') }}">
+                                            <i class="fas fa-store me-2"></i>Creator Dashboard
                                         </a>
                                     </li>
                                 @endif
+                                 <li>
+                                    <a class="dropdown-item" href="{{ route('customer.dashboard') }}">
+                                        <i class="fas fa-user me-2"></i>Customer Dashboard
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>

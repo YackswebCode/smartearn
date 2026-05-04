@@ -8,7 +8,7 @@
     --gradient-green: linear-gradient(135deg, var(--primary-green) 0%, var(--light-green) 100%);
     --green-light-bg: #e8f3f2;      /* new – soft green for backgrounds */
     --green-extra-light: #f0f9f8;   /* new – very light green */
-    --green-dark: #043a38;          /* already used */
+    --green-dark: #043a38;         /* already used */
 }
 
 body {

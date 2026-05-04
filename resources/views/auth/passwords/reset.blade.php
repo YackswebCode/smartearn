@@ -11,10 +11,7 @@
             <div class="col-md-8 col-lg-6 col-xl-5">
                 <div class="auth-card">
                     <div class="text-center mb-4">
-                        <span class="d-inline-flex align-items-center justify-content-center bg-white rounded-3 shadow-sm"
-                              style="width: 64px; height: 64px; color: var(--primary-green); font-size: 2rem; font-weight: 800;">
-                            SE
-                        </span>
+                        <img src="{{ asset('images/logo.png') }}" alt="SmartEarn"  height="40">
                         <h2 class="fw-bold mt-4 mb-2" style="color: var(--primary-green);">Set new password</h2>
                         <p class="text-secondary">Your new password must be different from previous passwords.</p>
                     </div>
