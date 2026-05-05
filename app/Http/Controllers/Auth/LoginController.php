@@ -47,7 +47,7 @@ class LoginController extends Controller
         }
 
         if ($user->account_type === 'edtech') {
-            return redirect()->route('vendor.dashboard');
+            return redirect()->route('affiliate.digital_university');
         }
 
         // ⚠️ Fallback (in case account_type is null or invalid)
